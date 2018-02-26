@@ -17,7 +17,8 @@
 
 ## Beta Features
 > The goals for the Beta version of our application include:
-> * An account creation system for users to create accounts and play
+> * A main menu for the user to navigate between game play, sign in, and leader boards
+> * An account creation system for users to create accounts
 > * Completed UI that allows users to play Rythm Crawl in single player mode using a keyboard
 > * A high score system for the single player mode
 
@@ -25,8 +26,9 @@
 
 ## Final Version Features
 > For the final version, we expect the application to include:
-> * Support for real-time multiplayer mode
-> * Users will be able to play the game using a mobile devices
+> * Implementation for real-time multiplayer mode (1-3 players)
+> * Modifications to UI to support multiplayer mode
+> * Users will be able to play the game using a mobile device
 
 ***
 

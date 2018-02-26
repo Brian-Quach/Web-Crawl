@@ -17,6 +17,7 @@
 
 ## Beta Features
 > The goals for the Beta version of our application include:
+> * A main menu for the user to navigate between game play, sign in, and leader boards
 > * An account creation system for users to create accounts and play
 > * Account profiles with profile picture
 > * Account play history and personal scores
@@ -30,8 +31,9 @@
 > For the final version, we expect the application to include:
 > * Users will be able to create a game room for up to 4 players
 > * Other players will be able to join a game room
-> * Users will be able to play the game using a mobile devices
 > * A larger collection of levels 
+> * Modifications to UI to support multiplayer mode
+> * Users will be able to play the game using a mobile device
 
 ***
 

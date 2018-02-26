@@ -18,19 +18,21 @@
 ## Beta Features
 > The goals for the Beta version of our application include:
 > * An account creation system for users to create accounts and play
-> * Completed UI that allows users to play ___ in single player mode
+> * Completed UI that allows users to play ___ in single player mode using a keyboard
 > * A high score system for the single player mode
 
 ***
 
 ## Final Version Features
-> 
+> For the final version, we expect the application to include:
+> * Support for real-time multiplayer mode
+> * Users will be able to play the game using a mobile devices
 
 ***
 
 ## Technology To Be Used
-> * The front end of ___ will be implemented using WebGL.
-> * Socket.io will be used to synchronize between browsers devices
+> * The front end of ___ will be implemented using [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API).
+> * [Socket.io](https://socket.io/) will be used to synchronize between browsers devices
 > * A NoSQL database will be used in the back end to store user profiles and levels
 
 ***
@@ -38,6 +40,7 @@
 ## Potential Challenges
 > * Latency between users may cause issues if the communication requests are too frequent or large
 > * WebGL will have to be learned for more visually pleasing graphics
+> * We will need to find a way to have multiple games running at once
 
 ***
 

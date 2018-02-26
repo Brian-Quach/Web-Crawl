@@ -6,7 +6,7 @@
 ***
 
 ## Team Members
-> The members of the Web Crawlers are Alibasit Abdul Hashim, Rachel Wong, and Brian Quach.
+> The members of the Web Crawlers are [Alibasit Abdul Hashim](https://github.com/ali-basit), [Rachel Wong](https://github.com/rachel-wong), and [Brian Quach](https://github.com/Brian-Quach).
 
 ***
 

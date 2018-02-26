@@ -39,9 +39,10 @@
 
 ## Potential Challenges
 > * Latency between users may cause issues if the communication requests are too frequent or large
-> * WebGL will have to be learned for more visually pleasing graphics
+> * WebGL will have to be learned to animate the visual aspects of the game
 > * We will need to find a way to have multiple games running at once
 > * Creating a seamless navigation experience for the user, as we will have multiple pages including account management, leaderboards, and the game itself.
+> * Since multiple browsers and platforms will be used, the CSS will have to be customized for different types of screens. This will likely cause some headache.
 
 ***
 

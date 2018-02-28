@@ -1,7 +1,7 @@
 # Web Crawlers - Project Proposal
 
 ## Project Title
-> Rythm Crawl
+> Rhythm Crawl
 
 ***
 

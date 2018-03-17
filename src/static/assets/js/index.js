@@ -53,14 +53,19 @@
             document.getElementById('roomId').innerHTML = roomId;
             var players = [];
 
+            // UNWRAPPED THIS CODE - NOT REALLY SURE HOW TO RUN DYNAMICALLY - TEMP SOLN
+            /*
             for (var i=0; i<capacity; i++){
+                var curr_i = i;
                 var newPlayer = setupHostPeer();
                 newPlayer.on('signal', function(data){
                     host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
                     });
                 });
                 newPlayer.on('connect', function(){
-                    console.log("Player Connected");
+                    var playernum = curr_i;
+                    console.log("Player Connected (%s)", playernum);
+
                 })
 
                 players.push({
@@ -76,7 +81,119 @@
                 document.getElementById('sendAlert').addEventListener('click', function(){
                     newPlayer.send("Test");
                 });
+                console.log(curr_i);
+
+            }*/
+
+            if (capacity > 0) {
+                var player1 = setupHostPeer();
+                player1.on('signal', function(data){
+                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                    });
+                });
+                player1.on('connect', function(){
+                    var playernum = 1;
+                    console.log("Player Connected (%s)", playernum);
+
+                })
+
+                players.push({
+                    peer: player1,
+                    id: null
+                });
+
+                // Receive Data
+                player1.on('data', function (data) {
+                    displayMessage(data);
+                });
+
+                document.getElementById('sendAlert').addEventListener('click', function(){
+                    player1.send("Test");
+                });
             }
+
+            if (capacity > 1) {
+                var player2 = setupHostPeer();
+                player2.on('signal', function(data){
+                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                    });
+                });
+                player2.on('connect', function(){
+                    var playernum = 2;
+                    console.log("Player Connected (%s)", playernum);
+
+                })
+
+                players.push({
+                    peer: player2,
+                    id: null
+                });
+
+                // Receive Data
+                player2.on('data', function (data) {
+                    displayMessage(data);
+                });
+
+                document.getElementById('sendAlert').addEventListener('click', function(){
+                    player2.send("Test");
+                });
+            }
+
+            if (capacity > 2) {
+                var player3 = setupHostPeer();
+                player3.on('signal', function(data){
+                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                    });
+                });
+                player3.on('connect', function(){
+                    var playernum = 2;
+                    console.log("Player Connected (%s)", playernum);
+
+                })
+
+                players.push({
+                    peer: player3,
+                    id: null
+                });
+
+                // Receive Data
+                player3.on('data', function (data) {
+                    displayMessage(data);
+                });
+
+                document.getElementById('sendAlert').addEventListener('click', function(){
+                    player3.send("Test");
+                });
+            }
+
+            if (capacity > 3) {
+                var player4 = setupHostPeer();
+                player4.on('signal', function(data){
+                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                    });
+                });
+                player4.on('connect', function(){
+                    var playernum = 3;
+                    console.log("Player Connected (%s)", playernum);
+
+                })
+
+                players.push({
+                    peer: player4,
+                    id: null
+                });
+
+                // Receive Data
+                player4.on('data', function (data) {
+                    displayMessage(data);
+                });
+
+                document.getElementById('sendAlert').addEventListener('click', function(){
+                    player4.send("Test");
+                });
+            }
+            // Caps at 4.
+
 
             document.getElementById('checkRoom').addEventListener('click', function () {
                 gameRoomConnect(players, roomId);
@@ -137,12 +254,13 @@
 
             // Receive Data
             gameRoom.on('data', function (data) {
-                alert(data);
+                displayMessage(data);
             });
 
             document.getElementById('sendAlert').addEventListener('click', function(){
                 gameRoom.send("Test");
             });
+
             // TODO: Connection done. Game stuff below
 
         });
@@ -162,12 +280,18 @@
 		});
 	}
 
+	function displayMessage(msg){
+        var newMsg = document.createElement('p');
+        newMsg.innerHTML = msg;
+        document.getElementById('datastream').appendChild(newMsg);
+    }
+
     window.addEventListener('load', function(){
 		welcomeDeviceType();
 
 		document.getElementById('createRoom').addEventListener('click', function () {
             var roomName = "testGame";
-            var roomCapacity = 1;
+            var roomCapacity = 2;
             gameRoomSetup(roomName, roomCapacity);
         });
 

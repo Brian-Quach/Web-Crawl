@@ -138,7 +138,6 @@
                     player2.send("Test");
                 });
             }
-
             if (capacity > 2) {
                 var player3 = setupHostPeer();
                 player3.on('signal', function(data){
@@ -173,7 +172,7 @@
                     });
                 });
                 player4.on('connect', function(){
-                    var playernum = 4;
+                    var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
                 })

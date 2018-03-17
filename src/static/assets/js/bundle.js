@@ -2813,7 +2813,6 @@ process.umask = function() { return 0; };
                     player2.send("Test");
                 });
             }
-
             if (capacity > 2) {
                 var player3 = setupHostPeer();
                 player3.on('signal', function(data){
@@ -2821,7 +2820,7 @@ process.umask = function() { return 0; };
                     });
                 });
                 player3.on('connect', function(){
-                    var playernum = 2;
+                    var playernum = 3;
                     console.log("Player Connected (%s)", playernum);
 
                 })
@@ -2848,7 +2847,7 @@ process.umask = function() { return 0; };
                     });
                 });
                 player4.on('connect', function(){
-                    var playernum = 3;
+                    var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
                 })
@@ -2966,7 +2965,7 @@ process.umask = function() { return 0; };
 
 		document.getElementById('createRoom').addEventListener('click', function () {
             var roomName = "testGame";
-            var roomCapacity = 2;
+            var roomCapacity = 4;
             gameRoomSetup(roomName, roomCapacity);
         });
 

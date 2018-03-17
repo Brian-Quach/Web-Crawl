@@ -146,7 +146,7 @@
                     });
                 });
                 player3.on('connect', function(){
-                    var playernum = 2;
+                    var playernum = 3;
                     console.log("Player Connected (%s)", playernum);
 
                 })
@@ -173,7 +173,7 @@
                     });
                 });
                 player4.on('connect', function(){
-                    var playernum = 3;
+                    var playernum = 4;
                     console.log("Player Connected (%s)", playernum);
 
                 })
@@ -291,7 +291,7 @@
 
 		document.getElementById('createRoom').addEventListener('click', function () {
             var roomName = "testGame";
-            var roomCapacity = 2;
+            var roomCapacity = 4;
             gameRoomSetup(roomName, roomCapacity);
         });
 

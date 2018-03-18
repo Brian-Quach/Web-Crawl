@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
     <meta charset="utf-8">
     <meta name="description" content="C09 Tests">
     <meta name="author" content="Brian Quach">
 
     <title>C09 | Testing</title>
-	
+
     <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="assets/js/phaser.min.js"></script>
+    <script type="text/javascript" src="assets/js/api.js"></script>
+    <script type="text/javascript" src="assets/js/api_host.js"></script>
+    <script type="text/javascript" src="assets/js/api_mobile.js"></script>
+    <!--script type="text/javascript" src="assets/js/index.js"></script-->
+    <script type="text/javascript" src="assets/js/bundle.js"></script>
+</head>
 
-    </head>
-
-    <body>
+<body>
 	
-		<h1 id="title"></h1>
+    <h1 id="title"></h1>
 
 
-        <div id = "testbuttons">
-            <button id="createRoom">Create Room(Desktop)</button>
-            <button id="reqRoom">Request Room(Mobile)</button>
-            <button id="checkRoom">Confirm Connection(Desktop)</button>
-            <button id="connect">Connect All(Desktop)</button>
-            <br/>
-            <textarea id="roomId"></textarea>
-            <br/>
-            <button id="sendAlert">Test Connection</button>
-        </div>
-        <div id="datastream">
+    <div id = "testbuttons">
+        <button id="createRoom">Create Room(Desktop)</button>
+        <button id="reqRoom">Request Room(Mobile)</button>
+        <button id="checkRoom">Confirm Connection(Desktop)</button>
+        <button id="connect">Connect All(Desktop)</button>
+        <br/>
+        <textarea id="roomId"></textarea>
+        <br/>
+        <button id="sendAlert">Test Connection</button>
+    </div>
 
-        </div>
+    <div id="datastream">
+        <!-- Using to test connections -->
+    </div>
 
-		<script src="assets/js/api.js"></script>
-		<script src="assets/js/api_host.js"></script>
-		<script src="assets/js/api_mobile.js"></script>
-		<!--script src="assets/js/index.js"></script-->
-        <script src="assets/js/bundle.js"></script>
-    </body>
+    <canvas id="gameArea">
+
+    </canvas>
+
+
+
+
+</body>
 	
 </html>

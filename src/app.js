@@ -45,7 +45,7 @@ var roomsnext = 0;
 
 // Log Http requests to console
 app.use(function (req, res, next){
-    //console.log("HTTP request", req.method, req.url, req.body);
+    console.log("HTTP request", req.method, req.url, req.body);
     next();
 });
 
@@ -114,8 +114,6 @@ app.get('/api/requestConnection/:roomId/', function(req, res){
                         playerNumber: j,
                         connectionString: room.players[j].hostString
                     };
-                    console.log("New roommmmmmmmm");
-                    console.log(ret);
                     room.players[j].peerString = "Waiting";
                     return res.json(ret);
                 }
@@ -149,7 +147,7 @@ app.post('/api/connectToRoom/', function(req, res){
 app.get('/api/getConnection/:roomId/:playerNum/', function(req, res){
     var roomId = req.params.roomId;
     var playerNum = req.params.playerNum;
-    console.log("retrieving connectionstr for player" + playerNum+ " in " + roomId);
+
     for (var i=0; i<rooms.length; i++){
         if (rooms[i].id == roomId){
             var player = rooms[i].players[playerNum];

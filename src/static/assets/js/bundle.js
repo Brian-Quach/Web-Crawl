@@ -2876,6 +2876,11 @@ process.umask = function() { return 0; };
             document.getElementById('connect').addEventListener('click', function (){
                 connectAll(players);
             });
+
+
+            // TODO: Connections set up: Start game stuff below
+
+            startGame(players);
         });
 	}
 
@@ -2935,6 +2940,7 @@ process.umask = function() { return 0; };
                 gameRoom.send("Test");
             });
 
+            startController(gameRoom);
             // TODO: Connection done. Game stuff below
 
         });
@@ -2961,22 +2967,84 @@ process.umask = function() { return 0; };
     }
 
 
-    function startController(){
+    function startGame(players){
         var mainState = {
             preload: function() {
                 // This function will be executed at the beginning
-                // That's where we load the images and sounds
+                game.load.image('box1', 'assets/img/button1.png');
+                game.load.image('box2', 'assets/img/button2.png');
+                game.load.image('box3', 'assets/img/button3.png');
+                game.load.image('box4', 'assets/img/button4.png');
             },
 
             create: function() {
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
+                game.stage.backgroundColor = '#71c5cf';
             },
 
             update: function() {
                 // This function is called 60 times per second
                 // It contains the game's logic
             },
+        };
+
+        var game = new Phaser.Game(800, 500);
+
+        // Add the 'mainState' and call it 'main'
+        game.state.add('main', mainState);
+
+        // Start the state to actually start the game
+        game.state.start('main');
+
+        return game;
+    }
+
+
+    function startController(connection){
+        var mainState = {
+            preload: function() {
+                // This function will be executed at the beginning
+                // That's where we load the images and sounds
+                controller.load.image('button1', 'assets/img/button1.png');
+                controller.load.image('button2', 'assets/img/button2.png');
+                controller.load.image('button3', 'assets/img/button3.png');
+                controller.load.image('button4', 'assets/img/button4.png');
+            },
+
+            create: function() {
+                // Change the background color of the game to blue
+                controller.stage.backgroundColor = '#71c5cf';
+                // Display the buttons
+                this.button1 = controller.add.button(25, 300, 'button1', this.button1);
+                this.button2 = controller.add.button(125, 300, 'button2', this.button2);
+                this.button3 = controller.add.button(225, 300, 'button3', this.button3);
+                this.button4 = controller.add.button(325, 300, 'button4', this.button4);
+
+            },
+
+            update: function() {
+                // This function is called 60 times per second
+                // It contains the game's logic
+            },
+
+            button1: function() {
+                connection.send("Button1");
+                console.log("Button1 Pressed");
+            },
+            button2: function() {
+                connection.send("Button2");
+                console.log("Button2 Pressed");
+            },
+            button3: function() {
+                connection.send("Button3");
+                console.log("Button3 Pressed");
+            },
+            button4: function() {
+                connection.send("Button4");
+                console.log("Button4 Pressed");
+            },
+
         };
 
         var controller = new Phaser.Game(400, 490);
@@ -2988,62 +3056,6 @@ process.umask = function() { return 0; };
         controller.state.start('main');
 
         return controller;
-    }
-
-
-    function startGame(){
-        var mainState = {
-            preload: function() {
-                // This function will be executed at the beginning
-                // That's where we load the images and sounds
-                game.load.image('button1', 'assets/img/button1.png');
-                game.load.image('button2', 'assets/img/button2.png');
-                game.load.image('button3', 'assets/img/button3.png');
-                game.load.image('button4', 'assets/img/button4.png');
-            },
-
-            create: function() {
-                // Change the background color of the game to blue
-                game.stage.backgroundColor = '#71c5cf';
-                // Display the buttons
-                this.button1 = game.add.button(100, 245, 'button1', this.button1);
-                this.button2 = game.add.button(200, 245, 'button2', this.button2);
-                this.button3 = game.add.button(300, 245, 'button3', this.button3);
-                this.button4 = game.add.button(400, 245, 'button4', this.button4);
-
-            },
-
-            update: function() {
-                // This function is called 60 times per second
-                // It contains the game's logic
-            },
-
-            button1: function() {
-                console.log("Button1 Pressed");
-            },
-            button2: function() {
-                console.log("Button2 Pressed");
-            },
-            button3: function() {
-                console.log("Button3 Pressed");
-            },
-            button4: function() {
-                console.log("Button4 Pressed");
-            },
-
-        };
-
-        var game = new Phaser.Game(800, 600);
-
-        // Add the 'mainState' and call it 'main'
-        game.state.add('main', mainState);
-
-        // Start the state to actually start the game
-        game.state.start('main');
-
-
-
-        return game;
     }
 
     window.addEventListener('load', function(){
@@ -3061,7 +3073,6 @@ process.umask = function() { return 0; };
             joinRoom(roomId);
         });
 
-        startGame();
     });
 }())
 

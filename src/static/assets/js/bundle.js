@@ -2693,8 +2693,19 @@ process.umask = function() { return 0; };
         return null;
     }
 
+    function checkCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return true;
+        }
+        return false;
+    }
 
-	function setupHostPeer(){
+
+    function setupHostPeer(){
         var p = new Peer({
             initiator: true,
             trickle: false
@@ -2774,17 +2785,14 @@ process.umask = function() { return 0; };
 
                 players.push({
                     peer: player1,
-                    id: null
-                });
-
-                // Receive Data
-                player1.on('data', function (data) {
-                    displayMessage(data);
+                    id: null,
+                    connected: false
                 });
 
                 document.getElementById('sendAlert').addEventListener('click', function(){
                     player1.send("Test");
                 });
+
             }
 
             if (capacity > 1) {
@@ -2801,12 +2809,8 @@ process.umask = function() { return 0; };
 
                 players.push({
                     peer: player2,
-                    id: null
-                });
-
-                // Receive Data
-                player2.on('data', function (data) {
-                    displayMessage(data);
+                    id: null,
+                    connected: false
                 });
 
                 document.getElementById('sendAlert').addEventListener('click', function(){
@@ -2827,12 +2831,8 @@ process.umask = function() { return 0; };
 
                 players.push({
                     peer: player3,
-                    id: null
-                });
-
-                // Receive Data
-                player3.on('data', function (data) {
-                    displayMessage(data);
+                    id: null,
+                    connected: false
                 });
 
                 document.getElementById('sendAlert').addEventListener('click', function(){
@@ -2854,13 +2854,10 @@ process.umask = function() { return 0; };
 
                 players.push({
                     peer: player4,
-                    id: null
+                    id: null,
+                    connected: false
                 });
 
-                // Receive Data
-                player4.on('data', function (data) {
-                    displayMessage(data);
-                });
 
                 document.getElementById('sendAlert').addEventListener('click', function(){
                     player4.send("Test");
@@ -2869,9 +2866,9 @@ process.umask = function() { return 0; };
             // Caps at 4.
 
 
-            document.getElementById('checkRoom').addEventListener('click', function () {
+/*            document.getElementById('checkRoom').addEventListener('click', function () {
                 gameRoomConnect(players, roomId);
-            });
+            });*/
 
             document.getElementById('connect').addEventListener('click', function (){
                 connectAll(players);
@@ -2880,7 +2877,7 @@ process.umask = function() { return 0; };
 
             // TODO: Connections set up: Start game stuff below
 
-            startGame(players);
+            startGame(players, roomId);
         });
 	}
 
@@ -2931,16 +2928,12 @@ process.umask = function() { return 0; };
                 console.log("Player Connected");
             })
 
-            // Receive Data
-            gameRoom.on('data', function (data) {
-                displayMessage(data);
-            });
-
             document.getElementById('sendAlert').addEventListener('click', function(){
                 gameRoom.send("Test");
             });
 
             startController(gameRoom);
+
             // TODO: Connection done. Game stuff below
 
         });
@@ -2966,9 +2959,51 @@ process.umask = function() { return 0; };
         document.getElementById('datastream').appendChild(newMsg);
     }
 
+    function parseLevel(levelStr){
+        var level = levelStr.split("");
+        return level;
+    }
 
-    function startGame(players){
+    function startGame(players, roomId ){
+        var gameTimer = 0;
+        var gameStarted = false;
+
+        // Temp "Level"
+        var levelStr = "ABCDAABBDDCCAABDBCABCADBACABBDABBAABCADABCABDABABDCABA!";
+        var nextMove;
+        var level = parseLevel(levelStr);
+
         var mainState = {
+            preload: function() {
+                // This function will be executed at the beginning
+                game.load.image('box1', 'assets/img/button1.png');
+                game.load.image('box2', 'assets/img/button2.png');
+                game.load.image('box3', 'assets/img/button3.png');
+                game.load.image('box4', 'assets/img/button4.png');
+                game.load.image('connectButton', 'assets/img/connect.png');
+            },
+
+            create: function() {
+                // This function is called after the preload function
+                // Here we set up the game, display sprites, etc.
+                game.stage.backgroundColor = '#71c5cf';
+                this.connectButton = game.add.button(25, 300, 'connectButton', this.startGame);
+            },
+
+            update: function() {
+                if ((gameTimer++ == 10)&&(!gameStarted)){
+                    gameRoomConnect(players, roomId);
+                    gameTimer = 0;
+                }
+
+            },
+
+            startGame: function() {
+                game.state.start('gState', true, true);
+            },
+        };
+
+        var gameState = {
             preload: function() {
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
@@ -2980,19 +3015,71 @@ process.umask = function() { return 0; };
             create: function() {
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
-                game.stage.backgroundColor = '#71c5cf';
+                game.stage.backgroundColor = '#4bf442';
+                for (var i=0; i<players.length; i++){
+                    players[i].peer.on('data', function (data) {
+                        gameState.buttonPressed(i, data);
+                    });
+                }
+
+                var firstMove = level.shift();
+                gameState.displayNext(firstMove);
+                nextMove = firstMove;
             },
 
             update: function() {
-                // This function is called 60 times per second
-                // It contains the game's logic
+
+
             },
+
+            displayNext: function(next){
+                //this.nextMove.destroy();
+                switch(next) {
+                    case 'A':
+                        this.nextColour = game.add.sprite(400, 300, 'box1');
+                        nextMove = 'A';
+                        break;
+                    case 'B':
+                        this.nextColour = game.add.sprite(400, 300, 'box2');
+                        nextMove = 'B';
+                        break;
+                    case 'C':
+                        this.nextColour = game.add.sprite(400, 300, 'box3');
+                        nextMove = 'C';
+                        break;
+                    case 'D':
+                        this.nextColour = game.add.sprite(400, 300, 'box4');
+                        nextMove = 'D';
+                        break;
+                    default:
+                        this.nextColour.destroy();
+                        gameState.endGame();
+                }
+
+
+            },
+
+            buttonPressed: function(player, button) {
+                console.log(button + " sent");
+                console.log(nextMove);
+                if (button == nextMove){
+                    gameState.displayNext(level.shift());
+                }
+            },
+
+            endGame: function() {
+                game.state.start('main', true, true);
+            },
+
         };
+
 
         var game = new Phaser.Game(800, 500);
 
         // Add the 'mainState' and call it 'main'
         game.state.add('main', mainState);
+        // Add the 'gameState' and call it 'gState'
+        game.state.add('gState', gameState);
 
         // Start the state to actually start the game
         game.state.start('main');
@@ -3021,29 +3108,34 @@ process.umask = function() { return 0; };
                 this.button3 = controller.add.button(225, 300, 'button3', this.button3);
                 this.button4 = controller.add.button(325, 300, 'button4', this.button4);
 
+                connection.on('data', function (data) {
+                    displayMessage(data);
+                });
+
             },
 
             update: function() {
                 // This function is called 60 times per second
                 // It contains the game's logic
+
             },
 
             button1: function() {
-                connection.send("Button1");
+                connection.send("A");
                 console.log("Button1 Pressed");
             },
             button2: function() {
-                connection.send("Button2");
+                connection.send("B");
                 console.log("Button2 Pressed");
             },
             button3: function() {
-                connection.send("Button3");
+                connection.send("C");
                 console.log("Button3 Pressed");
             },
             button4: function() {
-                connection.send("Button4");
+                connection.send("D");
                 console.log("Button4 Pressed");
-            },
+            }
 
         };
 
@@ -3063,7 +3155,7 @@ process.umask = function() { return 0; };
 
 		document.getElementById('createRoom').addEventListener('click', function () {
             var roomName = "testGame";
-            var roomCapacity = 4;
+            var roomCapacity = 1;
             gameRoomSetup(roomName, roomCapacity);
         });
 

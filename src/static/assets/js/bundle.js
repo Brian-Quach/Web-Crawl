@@ -2736,7 +2736,7 @@ process.umask = function() { return 0; };
         // Request room ID from server
         host.createGameRoom(roomName, capacity, function(err, res){
             var roomId = res;
-            document.getElementById('roomId').innerHTML = roomId;
+            //document.getElementById('roomId').innerHTML = roomId;
             var players = [];
 
             // UNWRAPPED THIS CODE - NOT REALLY SURE HOW TO RUN DYNAMICALLY - TEMP SOLN
@@ -2789,9 +2789,6 @@ process.umask = function() { return 0; };
                     connected: false
                 });
 
-                document.getElementById('sendAlert').addEventListener('click', function(){
-                    player1.send("Test");
-                });
 
             }
 
@@ -2813,9 +2810,6 @@ process.umask = function() { return 0; };
                     connected: false
                 });
 
-                document.getElementById('sendAlert').addEventListener('click', function(){
-                    player2.send("Test");
-                });
             }
             if (capacity > 2) {
                 var player3 = setupHostPeer();
@@ -2835,9 +2829,6 @@ process.umask = function() { return 0; };
                     connected: false
                 });
 
-                document.getElementById('sendAlert').addEventListener('click', function(){
-                    player3.send("Test");
-                });
             }
 
             if (capacity > 3) {
@@ -2859,9 +2850,6 @@ process.umask = function() { return 0; };
                 });
 
 
-                document.getElementById('sendAlert').addEventListener('click', function(){
-                    player4.send("Test");
-                });
             }
             // Caps at 4.
 
@@ -2870,9 +2858,6 @@ process.umask = function() { return 0; };
                 gameRoomConnect(players, roomId);
             });*/
 
-            document.getElementById('connect').addEventListener('click', function (){
-                connectAll(players);
-            });
 
 
             // TODO: Connections set up: Start game stuff below
@@ -2905,38 +2890,10 @@ process.umask = function() { return 0; };
     }
 
 	function joinRoom(roomId){
-        mobile.requestRoomConnection(roomId, function(err, res){
-            if (err) {
-                console.log(err);
-                return;
-            }
-            var playerNumber = res.playerNumber;
-            var connectionStr = res.connectionString;
 
-            var gameRoom = setupClientPeer();
+        startController(roomId);
 
-            gameRoom.on('signal', function(data){
-                var responseString = JSON.stringify(data);
-                mobile.connectToRoom(roomId, playerNumber, responseString, function(err, res){
-                    if (err) console.log(err);
-                });
-            });
-
-            gameRoom.signal(connectionStr);
-
-            gameRoom.on('connect', function(){
-                console.log("Player Connected");
-            })
-
-            document.getElementById('sendAlert').addEventListener('click', function(){
-                gameRoom.send("Test");
-            });
-
-            startController(gameRoom);
-
-            // TODO: Connection done. Game stuff below
-
-        });
+        // TODO: Connection done. Game stuff below
     }
 
     function welcomeMessage(userType){
@@ -2945,13 +2902,59 @@ process.umask = function() { return 0; };
         welcome.innerHTML = message;
         welcome.setAttribute("UserType", userType);
     }
-    
+
 	function welcomeDeviceType(){
 		api.getDeviceType(function(err, device){
 			if (err) console.log(err);
 		    welcomeMessage(device);
 		});
 	}
+
+	function pageSetUp(){
+        api.getDeviceType(function(err, device){
+            if (err) return console.log(err);
+            var pageBody = document.getElementById('pageContent');
+
+            console.log(device);
+
+            if (device == 'host'){
+                var createRoomButton = document.createElement('button');
+                createRoomButton.innerHTML = 'Create Game Room';
+
+                pageBody.appendChild(createRoomButton);
+
+                createRoomButton.addEventListener('click', function () {
+                    var roomName = "testGame";
+                    var roomCapacity = 1;
+                    pageBody.style.display = "none";
+                    gameRoomSetup(roomName, roomCapacity);
+                });
+            } else if (device == 'controller'){
+                var joinRoomButton = document.createElement('button');
+                joinRoomButton.innerHTML = 'Join Room';
+
+                var joinRoomTextBox = document.createElement('textarea');
+
+                pageBody.appendChild(joinRoomButton);
+                pageBody.appendChild(joinRoomTextBox);
+
+                joinRoomButton.addEventListener('click', function () {
+                    // TODO: Option to see all rooms and choose one
+                    var roomId = joinRoomTextBox.value;
+                    pageBody.style.display = "none";
+                    joinRoom(roomId);
+                });
+
+            } else{
+                alert("Device not supported");
+            }
+
+
+        });
+
+
+
+    }
 
 	function displayMessage(msg){
         var newMsg = document.createElement('p');
@@ -2969,7 +2972,7 @@ process.umask = function() { return 0; };
         var gameStarted = false;
 
         // Temp "Level"
-        var levelStr = "ABCDAABBDDCCAABDBCABCADBACABBDABBAABCADABCABDABABDCABA!";
+        var levelStr = "ABCDABCDCBABCDABCDABCD!";
         var nextMove;
         var level = parseLevel(levelStr);
 
@@ -2988,6 +2991,14 @@ process.umask = function() { return 0; };
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
                 this.connectButton = game.add.button(25, 300, 'connectButton', this.startGame);
+
+                var roomNumberDisp = game.add.text(game.world.centerX, game.world.centerY, "Room Number: " + roomId,{
+                    font: '50px Arial',
+                    fill: '#ffffff',
+                    align: 'center'
+                });
+                roomNumberDisp.anchor.set(.5, .5);
+
             },
 
             update: function() {
@@ -2999,6 +3010,7 @@ process.umask = function() { return 0; };
             },
 
             startGame: function() {
+                connectAll(players);
                 game.state.start('gState', true, true);
             },
         };
@@ -3088,7 +3100,10 @@ process.umask = function() { return 0; };
     }
 
 
-    function startController(connection){
+    function startController(roomId){
+        var roomId = roomId;
+        var roomList = [];
+        var connection; // Passing in for now, but will change so that user selects game room from game
         var mainState = {
             preload: function() {
                 // This function will be executed at the beginning
@@ -3108,10 +3123,35 @@ process.umask = function() { return 0; };
                 this.button3 = controller.add.button(225, 300, 'button3', this.button3);
                 this.button4 = controller.add.button(325, 300, 'button4', this.button4);
 
-                connection.on('data', function (data) {
-                    displayMessage(data);
-                });
 
+                mobile.requestRoomConnection(roomId, function(err, res){
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    var playerNumber = res.playerNumber;
+                    var connectionStr = res.connectionString;
+
+                    var gameRoom = setupClientPeer();
+
+                    gameRoom.on('signal', function(data){
+                        var responseString = JSON.stringify(data);
+                        mobile.connectToRoom(roomId, playerNumber, responseString, function(err, res){
+                            if (err) console.log(err);
+                        });
+                    });
+
+                    gameRoom.signal(connectionStr);
+
+                    gameRoom.on('connect', function(){
+                        console.log("Player Connected");
+                    })
+
+                    gameRoom.on('data', function (data) {
+                        displayMessage(data);
+                    });
+                    connection = gameRoom;
+                });
             },
 
             update: function() {
@@ -3139,31 +3179,49 @@ process.umask = function() { return 0; };
 
         };
 
-        var controller = new Phaser.Game(400, 490);
+        var roomSelectState = {
 
-        // Add the 'mainState' and call it 'main'
+            preload: function() {
+                // This function will be executed at the beginning
+                // That's where we load the images and sounds
+
+                // Get all levels
+                mobile.listAllRooms(function(err, rooms){
+                    for (var i=0; i<rooms.length; i++){
+                        roomList.push(rooms[i].roomId);
+                    }
+                });
+            },
+
+            create: function() {
+                // Change the background color of the game to green
+                controller.stage.backgroundColor = '#90cf3c';
+
+            },
+
+            update: function() {
+                // This function is called 60 times per second
+                // It contains the game's logic
+
+            }
+        }
+
+        var controller = new Phaser.Game(window.innerWidth, window.innerHeight);
+
+        // Add controller states
         controller.state.add('main', mainState);
+        //controller.state.add('roomSelect', roomSelectState);
 
         // Start the state to actually start the game
+        //controller.state.start('main');
         controller.state.start('main');
+
 
         return controller;
     }
 
     window.addEventListener('load', function(){
-		welcomeDeviceType();
-
-		document.getElementById('createRoom').addEventListener('click', function () {
-            var roomName = "testGame";
-            var roomCapacity = 1;
-            gameRoomSetup(roomName, roomCapacity);
-        });
-
-        document.getElementById('reqRoom').addEventListener('click', function () {
-            // TODO: Option to see all rooms and choose one
-            var roomId = document.getElementById('roomId').value;
-            joinRoom(roomId);
-        });
+        pageSetUp();
 
     });
 }())

@@ -70,15 +70,15 @@ app.post('/api/createroom/', function(req,res){
 });
 
 app.get('/api/allrooms/', function(req, res){
-    var roomlist = [];
+    var roomList = [];
     for (var i=0; i<rooms.length; i++){
         var nextRoom = {
             roomId: rooms[i].id,
             roomName: rooms[i].roomName
         };
-        roomlist.push(nextRoom)
+        roomList.push(nextRoom)
     }
-    return res.json(roomlist);
+    return res.json(roomList);
 });
 
 app.post('/api/newpeer/', function(req, res){

@@ -29,5 +29,12 @@ var host = (function(){
         send("GET", "/api/getConnection/"+roomId+"/"+playerNum+"/", null, callback);
     }
 
+    module.getAllLevels = function(callback){
+        send("GET", "/api/allLevels/", null, callback);
+    }
+
+    module.getLevel = function(levelId, callback){
+        send("GET", "/api/getLevel/"+levelId+"/", null, callback);
+    }
     return module;
 })();

@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "events": "^2.0.0",
+    "phaser-kinetic-scrolling-plugin": "^1.0.8",
+    "phaser-list-view": "^1.5.2",
     "simple-peer": "^9.0.0"
   }
 }

@@ -2734,7 +2734,7 @@ process.umask = function() { return 0; };
     function gameRoomSetup(roomName, capacity){
 
         // Request room ID from server
-        host.createGameRoom(roomName, capacity, function(err, res){
+            host.createGameRoom(roomName, capacity, function(err, res){
             var roomId = res;
             //document.getElementById('roomId').innerHTML = roomId;
             var players = [];
@@ -2948,7 +2948,6 @@ process.umask = function() { return 0; };
                 pageBody.appendChild(joinRoomButton);
 
                 joinRoomButton.addEventListener('click', function () {
-                    // TODO: Option to see all rooms and choose one
                     var roomId = selectRoom.value;
                     pageBody.style.display = "none";
                     startController(roomId);
@@ -2996,6 +2995,7 @@ process.umask = function() { return 0; };
             },
 
             create: function() {
+                //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
@@ -3094,8 +3094,61 @@ process.umask = function() { return 0; };
 
         };
 
+        var testState = {
+            init: function () {
 
-        var game = new Phaser.Game(800, 500);
+                //Load the plugin
+                this.game.kineticScrolling = this.game.plugins.add(Phaser.Plugin.KineticScrolling);
+
+                //If you want change the default configuration before start the plugin
+
+                this.game.kineticScrolling.configure({
+                    onUpdate: function (x, y) {
+                        console.log('x', x, 'y', y);
+                    }
+                })
+            },
+            create: function () {
+
+                //Starts the plugin
+                this.game.kineticScrolling.start();
+
+                //If you want change the default configuration after start the plugin
+
+                this.info = this.game.add.text(game.world.width*0.01, game.world.height*0.01, "onUpdate callback to track delta", {
+                    font: "22px Arial",
+                    fill: "#ffffff"
+                });
+                this.info.fixedToCamera = true;
+
+                this.rectangles = [];
+
+                var initX = 50;
+
+                for (var i = 0; i < 25; i++) {
+                    this.rectangles.push(this.createRectangle(initX, this.game.world.centerY - 100, 250, 200));
+                    this.index = this.game.add.text(initX + 125, this.game.world.centerY, i + 1,
+                        { font: 'bold 150px Arial', align: "center" });
+                    this.index.anchor.set(0.5);
+                    initX += 300;
+                }
+
+                //Changing the world width
+                this.game.world.setBounds(0, 0, 302 * this.rectangles.length, this.game.height);
+            },
+
+            createRectangle: function (x, y, w, h) {
+                var sprite = this.game.add.graphics(x, y);
+                sprite.beginFill(Phaser.Color.getRandomColor(100, 255), 1);
+                sprite.bounds = new PIXI.Rectangle(0, 0, w, h);
+                sprite.drawRect(0, 0, w, h);
+
+                return sprite;
+            }
+        };
+
+
+        var game = new Phaser.Game(800, 500, Phaser.AUTO);
 
         // Add the 'mainState' and call it 'main'
         game.state.add('main', mainState);
@@ -3103,7 +3156,10 @@ process.umask = function() { return 0; };
         game.state.add('gState', gameState);
 
         // Start the state to actually start the game
-        game.state.start('main');
+        //game.state.start('main');
+
+        game.state.add('testscroll', testState);
+        game.state.start('testscroll');
 
         return game;
     }
@@ -3124,6 +3180,8 @@ process.umask = function() { return 0; };
             },
 
             create: function() {
+                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
                 // Change the background color of the game to blue
                 controller.stage.backgroundColor = '#71c5cf';
                 // Display the buttons
@@ -3233,8 +3291,64 @@ process.umask = function() { return 0; };
 
     window.addEventListener('load', function(){
         pageSetUp();
+        //testScroll();
 
     });
+
+    function testScroll(){
+        var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'phaser-example', {
+            init: function () {
+
+                //Load the plugin
+                this.game.kineticScrolling = this.game.plugins.add(Phaser.Plugin.KineticScrolling);
+
+                //If you want change the default configuration before start the plugin
+
+                this.game.kineticScrolling.configure({
+                    onUpdate: function (x, y) {
+                        console.log('x', x, 'y', y);
+                    }
+                })
+            },
+            create: function () {
+
+                //Starts the plugin
+                this.game.kineticScrolling.start();
+
+                //If you want change the default configuration after start the plugin
+
+                this.info = this.game.add.text(game.world.width*0.01, game.world.height*0.01, "onUpdate callback to track delta", {
+                    font: "22px Arial",
+                    fill: "#ffffff"
+                });
+                this.info.fixedToCamera = true;
+
+                this.rectangles = [];
+
+                var initX = 50;
+
+                for (var i = 0; i < 25; i++) {
+                    this.rectangles.push(this.createRectangle(initX, this.game.world.centerY - 100, 250, 200));
+                    this.index = this.game.add.text(initX + 125, this.game.world.centerY, i + 1,
+                        { font: 'bold 150px Arial', align: "center" });
+                    this.index.anchor.set(0.5);
+                    initX += 300;
+                }
+
+                //Changing the world width
+                this.game.world.setBounds(0, 0, 302 * this.rectangles.length, this.game.height);
+            },
+
+            createRectangle: function (x, y, w, h) {
+                var sprite = this.game.add.graphics(x, y);
+                sprite.beginFill(Phaser.Color.getRandomColor(100, 255), 1);
+                sprite.bounds = new PIXI.Rectangle(0, 0, w, h);
+                sprite.drawRect(0, 0, w, h);
+
+                return sprite;
+            }
+        });
+    }
 }())
 
 

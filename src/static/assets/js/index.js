@@ -29,7 +29,6 @@
         return false;
     }
 
-
     function setupHostPeer(){
         var p = new Peer({
             initiator: true,
@@ -254,30 +253,7 @@
                     gameRoomSetup(roomName, roomCapacity);
                 });
             } else if (device == 'controller'){
-                var selectRoom = document.createElement('select');
-                // Get all levels
-                mobile.listAllRooms(function(err, rooms){
-                    for (var i=0; i<rooms.length; i++){
-                        var nextOption = document.createElement('option');
-                        nextOption.innerHTML = rooms[i].roomName;
-                        nextOption.value = rooms[i].roomId;
-                        selectRoom.appendChild(nextOption);
-                    }
-                });
-
-
-                var joinRoomButton = document.createElement('button');
-                joinRoomButton.innerHTML = 'Join Room';
-
-                pageBody.appendChild(selectRoom);
-                pageBody.appendChild(joinRoomButton);
-
-                joinRoomButton.addEventListener('click', function () {
-                    var roomId = selectRoom.value;
-                    pageBody.style.display = "none";
-                    startController(roomId);
-                });
-
+                startController();
             } else{
                 alert("Device not supported");
             }
@@ -304,6 +280,9 @@
         var gameTimer = 0;
         var gameStarted = false;
 
+        var gameWidth = 800;
+        var gameHeight = 500;
+
         // Temp "Level"
         var levelStr = "ABCDABCDCBABCDABCDABCD!";
         var nextMove;
@@ -312,10 +291,6 @@
         var mainState = {
             preload: function() {
                 // This function will be executed at the beginning
-                game.load.image('box1', 'assets/img/button1.png');
-                game.load.image('box2', 'assets/img/button2.png');
-                game.load.image('box3', 'assets/img/button3.png');
-                game.load.image('box4', 'assets/img/button4.png');
                 game.load.image('connectButton', 'assets/img/connect.png');
             },
 
@@ -326,12 +301,6 @@
                 game.stage.backgroundColor = '#71c5cf';
                 this.connectButton = game.add.button(25, 300, 'connectButton', this.startGame);
 
-                var roomNumberDisp = game.add.text(game.world.centerX, game.world.centerY, "Room Number: " + roomId,{
-                    font: '50px Arial',
-                    fill: '#ffffff',
-                    align: 'center'
-                });
-                roomNumberDisp.anchor.set(.5, .5);
 
             },
 
@@ -419,61 +388,7 @@
 
         };
 
-        var testState = {
-            init: function () {
-
-                //Load the plugin
-                this.game.kineticScrolling = this.game.plugins.add(Phaser.Plugin.KineticScrolling);
-
-                //If you want change the default configuration before start the plugin
-
-                this.game.kineticScrolling.configure({
-                    onUpdate: function (x, y) {
-                        console.log('x', x, 'y', y);
-                    }
-                })
-            },
-            create: function () {
-
-                //Starts the plugin
-                this.game.kineticScrolling.start();
-
-                //If you want change the default configuration after start the plugin
-
-                this.info = this.game.add.text(game.world.width*0.01, game.world.height*0.01, "onUpdate callback to track delta", {
-                    font: "22px Arial",
-                    fill: "#ffffff"
-                });
-                this.info.fixedToCamera = true;
-
-                this.rectangles = [];
-
-                var initX = 50;
-
-                for (var i = 0; i < 25; i++) {
-                    this.rectangles.push(this.createRectangle(initX, this.game.world.centerY - 100, 250, 200));
-                    this.index = this.game.add.text(initX + 125, this.game.world.centerY, i + 1,
-                        { font: 'bold 150px Arial', align: "center" });
-                    this.index.anchor.set(0.5);
-                    initX += 300;
-                }
-
-                //Changing the world width
-                this.game.world.setBounds(0, 0, 302 * this.rectangles.length, this.game.height);
-            },
-
-            createRectangle: function (x, y, w, h) {
-                var sprite = this.game.add.graphics(x, y);
-                sprite.beginFill(Phaser.Color.getRandomColor(100, 255), 1);
-                sprite.bounds = new PIXI.Rectangle(0, 0, w, h);
-                sprite.drawRect(0, 0, w, h);
-
-                return sprite;
-            }
-        };
-
-
-        var game = new Phaser.Game(800, 500, Phaser.AUTO);
+        var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO);
 
         // Add the 'mainState' and call it 'main'
         game.state.add('main', mainState);
@@ -481,18 +396,18 @@
         game.state.add('gState', gameState);
 
         // Start the state to actually start the game
-        //game.state.start('main');
-
-        game.state.add('testscroll', testState);
-        game.state.start('testscroll');
+        game.state.start('main');
 
         return game;
     }
 
 
-    function startController(roomId){
-        var roomId = roomId;
-        var roomList = [];
+    function startController(){
+        var allRooms = [];
+        var allRooms = [{"roomId":0,"roomName":"sakjsa"},{"roomId":1,"roomName":"sfsd"},{"roomId":2,"roomName":"asfasd"},{"roomId":3,"roomName":"safsad"},{"roomId":4,"roomName":"sadkjsaf"},{"roomId":5,"roomName":"asdsaf"},{"roomId":6,"roomName":"asfasd"},{"roomId":7,"roomName":"asasdf"},{"roomId":8,"roomName":"asfksajd"},{"roomId":9,"roomName":"TEst"},{"roomId":10,"roomName":"Test1234"}];
+
+
+        var roomId;
         var connection; // Passing in for now, but will change so that user selects game room from game
         var mainState = {
             preload: function() {
@@ -571,32 +486,86 @@
 
         };
 
-        var roomSelectState = {
+        var selectState = {
 
-            preload: function() {
-                // This function will be executed at the beginning
-                // That's where we load the images and sounds
+            init: function () {
 
-                // Get all levels
-                mobile.listAllRooms(function(err, rooms){
-                    for (var i=0; i<rooms.length; i++){
-                        roomList.push(rooms[i].roomId);
-                    }
+                //Load the plugin
+                this.game.kineticScrolling = this.game.plugins.add(Phaser.Plugin.KineticScrolling);
+
+
+            },
+            create: function () {
+                //Starts the plugin
+                this.game.kineticScrolling.start();
+
+                this.info = this.game.add.text(controller.world.width*0.01, controller.world.height*0.01, "Select Room To Join", {
+                    font: "22px Arial",
+                    fill: "#ffffff"
+                });
+                this.info.fixedToCamera = true;
+
+                this.levels = [];
+
+                var initX = 50;
+
+                for (var i = 0; i < allRooms.length; i++) {
+                    var newButton = this.createButton(initX, this.game.world.centerY - 100, 250, 200);
+                    var btnId = allRooms[i].roomId;
+                    newButton.events.onInputUp.add(selectState.selectLevel, {id: btnId});
+                    this.levels.push(newButton);
+                    this.index = this.game.add.text(initX + 125, this.game.world.centerY, allRooms[i].roomName,
+                        { font: '50px Arial', align: "center" });
+                    this.index.anchor.set(0.5);
+                    initX += 300;
+                }
+
+                //Changing the world width
+                this.game.world.setBounds(0, 0, 302 * this.levels.length, this.game.height);
+            },
+
+
+            createButton: function (x, y, w, h) {
+                var newButton = this.game.add.graphics(x, y);
+                newButton.beginFill(0x00FA9A, 1);
+                newButton.bounds = new PIXI.Rectangle(0, 0, w, h);
+                newButton.drawRect(0, 0, w, h);
+
+                newButton.inputEnabled = true;
+                newButton.input.useHandCursor = true;
+
+
+                return newButton;
+            },
+
+            selectLevel: function(){
+                roomId = this.id;
+                controller.state.start('main', true, true);
+            }
+        };
+
+        var loadingState ={
+            init: function () {
+                this.roomsPromise = new Promise(function (resolve, reject){
+                    mobile.listAllRooms(function(err, allRooms){
+                        if (err) reject(err);
+                        resolve(allRooms);
+                    });
                 });
             },
 
-            create: function() {
-                // Change the background color of the game to green
-                controller.stage.backgroundColor = '#90cf3c';
-
+            create: function () {
+                this.roomsPromise.then(function(result){
+                    allRooms = result;
+                    controller.state.start('selectRoom', true, true);
+                }, function(err){
+                    console.log(err);
+                })
             },
 
-            update: function() {
-                // This function is called 60 times per second
-                // It contains the game's logic
-
-            }
-        }
+            update: function () {
+            },
+        };
 
         var controller = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO);
 
@@ -604,11 +573,13 @@
         console.log(window.innerWidth);
         // Add controller states
         controller.state.add('main', mainState);
+        controller.state.add('selectRoom', selectState);
+        controller.state.add('load', loadingState);
         //controller.state.add('roomSelect', roomSelectState);
 
         // Start the state to actually start the game
         //controller.state.start('main');
-        controller.state.start('main');
+        controller.state.start('load');
 
 
         return controller;

@@ -336,9 +336,6 @@
                 this.stageMoves = gameState.nextMoveSet();
 
                 for (var i=0; i<players.length; i++){
-                    players[i].peer.on('data', function (data) {
-                        gameState.buttonPressed(i, data);
-                    });
 
                     var playerState = {
                         stageComplete: false, // True when stage complete
@@ -349,6 +346,10 @@
 
                     playerStatus.push(playerState);
                     gameState.displayMoves(this.stageMoves, i);
+
+                    players[i].peer.on('data', function (data) {
+                        gameState.buttonPressed(i, data);
+                    });
                 }
                 gameTimer = 0;
             },

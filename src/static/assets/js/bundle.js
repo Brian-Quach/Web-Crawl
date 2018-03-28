@@ -2923,7 +2923,7 @@ process.umask = function() { return 0; };
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 3;
+                    var roomCapacity = 1;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -2958,9 +2958,10 @@ process.umask = function() { return 0; };
         var gameWidth = 800;
         var gameHeight = 600;
         var numPlayers = players.length;
+        var playerStatus = [];
 
         // Temp "Level"
-        var levelStr = "ABCDABCDCBABCDABCDABCD!";
+        var levelStr = "ABCDABCDCBABCDABCDABCD";
         var nextMove;
         var level = parseLevel(levelStr);
 
@@ -3007,24 +3008,42 @@ process.umask = function() { return 0; };
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#4bf442';
-                var firstMoves = gameState.nextMoveSet();
+                this.stageMoves = gameState.nextMoveSet();
 
                 for (var i=0; i<players.length; i++){
                     players[i].peer.on('data', function (data) {
                         gameState.buttonPressed(i, data);
                     });
 
-                    gameState.displayMoves(firstMoves, i);
+                    var playerState = {
+                        stageComplete: false, // True when stage complete
+                        stageStep: 0, // Keep track of which step player is on
+                        stageScore: 0, // Score multiplier based on timing
+                        totalScore: 0 // Total score to be displayed at top
+                    };
+
+                    playerStatus.push(playerState);
+                    gameState.displayMoves(this.stageMoves, i);
                 }
-
-
-                //var firstMove = level.shift();
-                //gameState.displayNext(firstMove);
-                //nextMove = firstMove;
+                gameTimer = 0;
             },
-
             update: function() {
+                // Keep checking for connections
+                if ((gameTimer++ === 180)&&(!gameStarted)){
+                    //TODO: Update scores
+                    this.stageMoves = gameState.nextMoveSet();
 
+                    for (var i=0; i<playerStatus.length; i++){
+                        playerStatus[i].stageComplete = false;
+                        playerStatus[i].stageStep = 0;
+                        playerStatus[i].totalScore += playerStatus[i].stageScore;
+                        playerStatus[i].stageScore = 0;
+
+                        gameState.displayMoves(this.stageMoves, i);
+                    }
+
+                    gameTimer = 0;
+                }
 
             },
 
@@ -3040,7 +3059,7 @@ process.umask = function() { return 0; };
                 var xPos = gameWidth/(2*numPlayers) + (gameWidth*(playerNum))/numPlayers;
                 var yPos = gameHeight/3 + 50;
 
-                for (var i=0; i<5; i++){
+                for (var i=0; i<moves.length; i++){
                     console.log(moves[i]);
                     game.add.sprite(xPos, yPos, gameState.decodeMove(moves[i])).anchor.setTo(0.5);
                     yPos += 60;
@@ -3060,47 +3079,26 @@ process.umask = function() { return 0; };
                 }
             },
 
-            displayNext: function(next){
-                var playerNum = 2;
-                var numPlayers = 2;
-                var yPos = gameHeight/3;
-                console.log(yPos);
-                var xPos = gameWidth/(2*numPlayers) + (gameWidth*(playerNum-1))/numPlayers;
-                console.log(xPos);
-                //this.nextMove.destroy();
-                switch(next) {
-                    case 'A':
-                        this.nextColour = game.add.sprite(xPos, yPos, 'box1');
-                        this.nextColour.anchor.setTo(0.5);
-                        nextMove = 'A';
-                        break;
-                    case 'B':
-                        this.nextColour = game.add.sprite(xPos, yPos, 'box2');
-                        this.nextColour.anchor.setTo(0.5);
-                        nextMove = 'B';
-                        break;
-                    case 'C':
-                        this.nextColour = game.add.sprite(xPos, yPos, 'box3');
-                        this.nextColour.anchor.setTo(0.5);
-                        nextMove = 'C';
-                        break;
-                    case 'D':
-                        this.nextColour = game.add.sprite(xPos, yPos, 'box4');
-                        this.nextColour.anchor.setTo(0.5);
-                        nextMove = 'D';
-                        break;
-                    default:
-                        this.nextColour.destroy();
-                        gameState.endGame();
-                }
-
-
-            },
-
             buttonPressed: function(player, button) {
                 console.log(button + " sent");
                 console.log(nextMove);
-                if (button == nextMove){
+                if(!playerStatus[player].stageComplete){
+                    var currStep = playerStatus[player].stageStep;
+                    if (button === this.stageMoves[currStep]){
+                        playerStatus[player].stageStep++;
+                        if(playerStatus[player].stageStep === this.stageMoves.length){
+                            // TODO: Add score properly
+                            playerStatus[player].stageScore = 10;
+                            playerStatus[player].stageComplete = true;
+                            console.log("Done!!");
+                        }
+
+                    } else {
+                        console.log("Wrong move");
+                        playerStatus[player].stageStep = 0;
+                    }
+                }
+                if (button === nextMove){
                     gameState.displayNext(level.shift());
                 }
             },
@@ -3127,7 +3125,6 @@ process.umask = function() { return 0; };
 
     function startController(){
         var allRooms = [];
-        var allRooms = [{"roomId":0,"roomName":"sakjsa"},{"roomId":1,"roomName":"sfsd"},{"roomId":2,"roomName":"asfasd"},{"roomId":3,"roomName":"safsad"},{"roomId":4,"roomName":"sadkjsaf"},{"roomId":5,"roomName":"asdsaf"},{"roomId":6,"roomName":"asfasd"},{"roomId":7,"roomName":"asasdf"},{"roomId":8,"roomName":"asfksajd"},{"roomId":9,"roomName":"TEst"},{"roomId":10,"roomName":"Test1234"}];
 
 
         var roomId;

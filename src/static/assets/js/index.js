@@ -248,7 +248,7 @@
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 1;
+                    var roomCapacity = 2;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -347,15 +347,20 @@
                     playerStatus.push(playerState);
                     gameState.displayMoves(this.stageMoves, i);
 
-                    players[i].peer.on('data', function (data) {
-                        gameState.buttonPressed(i, data);
-                    });
+                    gameState.createListener(i);
                 }
                 gameTimer = 0;
             },
+
+            createListener: function(playerNum){
+                players[playerNum].peer.on('data', function (data) {
+                    gameState.buttonPressed(playerNum, data);
+                });
+            },
+
             update: function() {
                 // Keep checking for connections
-                if ((gameTimer++ === 180)&&(!gameStarted)){
+                if ((gameTimer++ === 600)&&(!gameStarted)){
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
@@ -407,7 +412,8 @@
 
             buttonPressed: function(player, button) {
                 console.log(button + " sent");
-                console.log(nextMove);
+                console.log(playerStatus);
+                console.log(player);
                 if(!playerStatus[player].stageComplete){
                     var currStep = playerStatus[player].stageStep;
                     if (button === this.stageMoves[currStep]){

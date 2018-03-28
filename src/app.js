@@ -86,7 +86,7 @@ app.get('/api/allrooms/', function(req, res){
             roomId: rooms[i].id,
             roomName: rooms[i].roomName
         };
-        roomList.push(nextRoom)
+        roomList.push(nextRoom);
     }
     return res.json(roomList);
 });

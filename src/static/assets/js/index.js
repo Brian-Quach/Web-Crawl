@@ -281,7 +281,8 @@
         var gameStarted = false;
 
         var gameWidth = 800;
-        var gameHeight = 500;
+        var gameHeight = 600;
+        var numPlayers = players.length;
 
         // Temp "Level"
         var levelStr = "ABCDABCDCBABCDABCDABCD!";
@@ -299,12 +300,12 @@
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
-                this.connectButton = game.add.button(25, 300, 'connectButton', this.startGame);
-
-
+                this.connectButton = game.add.button(game.world.centerX, game.world.centerY, 'connectButton', this.startGame);
+                this.connectButton.anchor.setTo(0.5);
             },
 
             update: function() {
+                // Keep checking for connections
                 if ((gameTimer++ == 10)&&(!gameStarted)){
                     gameRoomConnect(players, roomId);
                     gameTimer = 0;
@@ -331,15 +332,20 @@
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#4bf442';
+                var firstMoves = gameState.nextMoveSet();
+
                 for (var i=0; i<players.length; i++){
                     players[i].peer.on('data', function (data) {
                         gameState.buttonPressed(i, data);
                     });
+
+                    gameState.displayMoves(firstMoves, i);
                 }
 
-                var firstMove = level.shift();
-                gameState.displayNext(firstMove);
-                nextMove = firstMove;
+
+                //var firstMove = level.shift();
+                //gameState.displayNext(firstMove);
+                //nextMove = firstMove;
             },
 
             update: function() {
@@ -347,23 +353,65 @@
 
             },
 
+            nextMoveSet: function(){
+                var nextMoves = level.splice(0,5);
+                console.log(nextMoves);
+                return nextMoves;
+            },
+
+            displayMoves: function(moves, playerNum){
+                console.log(playerNum);
+                console.log(numPlayers);
+                var xPos = gameWidth/(2*numPlayers) + (gameWidth*(playerNum))/numPlayers;
+                var yPos = gameHeight/3 + 50;
+
+                for (var i=0; i<5; i++){
+                    console.log(moves[i]);
+                    game.add.sprite(xPos, yPos, gameState.decodeMove(moves[i])).anchor.setTo(0.5);
+                    yPos += 60;
+                }
+            },
+
+            decodeMove: function(move){
+                switch (move) {
+                    case 'A':
+                        return 'box1';
+                    case 'B':
+                        return 'box2';
+                    case 'C':
+                        return 'box3';
+                    case 'D':
+                        return 'box4';
+                }
+            },
+
             displayNext: function(next){
+                var playerNum = 2;
+                var numPlayers = 2;
+                var yPos = gameHeight/3;
+                console.log(yPos);
+                var xPos = gameWidth/(2*numPlayers) + (gameWidth*(playerNum-1))/numPlayers;
+                console.log(xPos);
                 //this.nextMove.destroy();
                 switch(next) {
                     case 'A':
-                        this.nextColour = game.add.sprite(400, 300, 'box1');
+                        this.nextColour = game.add.sprite(xPos, yPos, 'box1');
+                        this.nextColour.anchor.setTo(0.5);
                         nextMove = 'A';
                         break;
                     case 'B':
-                        this.nextColour = game.add.sprite(400, 300, 'box2');
+                        this.nextColour = game.add.sprite(xPos, yPos, 'box2');
+                        this.nextColour.anchor.setTo(0.5);
                         nextMove = 'B';
                         break;
                     case 'C':
-                        this.nextColour = game.add.sprite(400, 300, 'box3');
+                        this.nextColour = game.add.sprite(xPos, yPos, 'box3');
+                        this.nextColour.anchor.setTo(0.5);
                         nextMove = 'C';
                         break;
                     case 'D':
-                        this.nextColour = game.add.sprite(400, 300, 'box4');
+                        this.nextColour = game.add.sprite(xPos, yPos, 'box4');
+                        this.nextColour.anchor.setTo(0.5);
                         nextMove = 'D';
                         break;
                     default:
@@ -422,35 +470,33 @@
             create: function() {
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-                // Change the background color of the game to blue
-                controller.stage.backgroundColor = '#71c5cf';
                 // Display the buttons
                 this.button1 = controller.add.button(25, 300, 'button1', this.button1);
                 this.button2 = controller.add.button(125, 300, 'button2', this.button2);
                 this.button3 = controller.add.button(225, 300, 'button3', this.button3);
                 this.button4 = controller.add.button(325, 300, 'button4', this.button4);
 
-
                 mobile.requestRoomConnection(roomId, function(err, res){
                     if (err) {
                         console.log(err);
-                        return;
-                    }
+                        return controller.state.start('selectRoom', true, true);
+                    } else
+
                     var playerNumber = res.playerNumber;
                     var connectionStr = res.connectionString;
 
                     var gameRoom = setupClientPeer();
 
-                    gameRoom.on('signal', function(data){
+                    gameRoom.on('signal', function (data) {
                         var responseString = JSON.stringify(data);
-                        mobile.connectToRoom(roomId, playerNumber, responseString, function(err, res){
+                        mobile.connectToRoom(roomId, playerNumber, responseString, function (err, res) {
                             if (err) return console.log(err);
                         });
                     });
 
                     gameRoom.signal(connectionStr);
 
-                    gameRoom.on('connect', function(){
+                    gameRoom.on('connect', function () {
                         console.log("Player Connected");
                     })
 
@@ -458,7 +504,9 @@
                         displayMessage(data);
                     });
                     connection = gameRoom;
+
                 });
+
             },
 
             update: function() {

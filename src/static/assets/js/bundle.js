@@ -3039,13 +3039,18 @@ process.umask = function() { return 0; };
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
-                    for (var i=0; i<playerStatus.length; i++){
-                        playerStatus[i].stageComplete = false;
-                        playerStatus[i].stageStep = 0;
-                        playerStatus[i].totalScore += playerStatus[i].stageScore;
-                        playerStatus[i].stageScore = 0;
+                    if (this.stageMoves){
+                        for (var i=0; i<playerStatus.length; i++){
+                            playerStatus[i].stageComplete = false;
+                            playerStatus[i].stageStep = 0;
+                            playerStatus[i].totalScore += playerStatus[i].stageScore;
+                            playerStatus[i].stageScore = 0;
 
-                        gameState.displayMoves(this.stageMoves, i);
+                            gameState.displayMoves(this.stageMoves, i);
+                        }
+                    } else {
+                        console.log("GameOver");
+                        // TODO: End game
                     }
 
                     gameTimer = 0;

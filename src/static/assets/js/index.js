@@ -360,7 +360,7 @@
 
             update: function() {
                 // Keep checking for connections
-                if ((gameTimer++ === 600)&&(!gameStarted)){
+                if (gameTimer++ === 600){
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
@@ -420,7 +420,7 @@
                         playerStatus[player].stageStep++;
                         if(playerStatus[player].stageStep === this.stageMoves.length){
                             // TODO: Add score properly
-                            playerStatus[player].stageScore = 10;
+                            playerStatus[player].stageScore = 500-gameTimer;
                             playerStatus[player].stageComplete = true;
                             console.log("Done!!");
                         }
@@ -455,6 +455,9 @@
     function startController(){
         var allRooms = [];
 
+        var gameWidth = 800;
+        var gameHeight = 600;
+
 
         var roomId;
         var connection; // Passing in for now, but will change so that user selects game room from game
@@ -469,13 +472,16 @@
             },
 
             create: function() {
-                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+                var buttonY = gameHeight*(3/4);
 
                 // Display the buttons
-                this.button1 = controller.add.button(25, 300, 'button1', this.button1);
-                this.button2 = controller.add.button(125, 300, 'button2', this.button2);
-                this.button3 = controller.add.button(225, 300, 'button3', this.button3);
-                this.button4 = controller.add.button(325, 300, 'button4', this.button4);
+                this.button1 = controller.add.button(gameWidth*(1/8), buttonY, 'button1', this.button1).anchor.setTo(0.5,0.5);
+                this.button2 = controller.add.button(gameWidth*(3/8), buttonY, 'button2', this.button2).anchor.setTo(0.5,0.5);
+                this.button3 = controller.add.button(gameWidth*(5/8), buttonY, 'button3', this.button3).anchor.setTo(0.5,0.5);
+                this.button4 = controller.add.button(gameWidth*(7/8), buttonY, 'button4', this.button4).anchor.setTo(0.5,0.5);
+
 
                 mobile.requestRoomConnection(roomId, function(err, res){
                     if (err) {
@@ -616,10 +622,9 @@
             },
         };
 
-        var controller = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO);
+        var controller = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO);
 
-        console.log(window.innerHeight);
-        console.log(window.innerWidth);
+
         // Add controller states
         controller.state.add('main', mainState);
         controller.state.add('selectRoom', selectState);

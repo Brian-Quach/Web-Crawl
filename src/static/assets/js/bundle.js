@@ -3039,7 +3039,7 @@ process.umask = function() { return 0; };
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
-                    if (this.stageMoves){
+                    if (this.stageMoves.length !== 0){
                         for (var i=0; i<playerStatus.length; i++){
                             playerStatus[i].stageComplete = false;
                             playerStatus[i].stageStep = 0;
@@ -3050,6 +3050,7 @@ process.umask = function() { return 0; };
                         }
                     } else {
                         console.log("GameOver");
+                        game.state.start('main', true, true);
                         // TODO: End game
                     }
 

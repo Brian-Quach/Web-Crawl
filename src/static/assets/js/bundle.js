@@ -3086,12 +3086,12 @@ process.umask = function() { return 0; };
             },
 
             buttonPressed: function(player, button) {
-                console.log(button + " sent");
                 console.log(playerStatus);
-                console.log(player);
-                if(!playerStatus[player].stageComplete){
+                console.log(button + " sent");
+                if (!playerStatus[player].stageComplete){
                     var currStep = playerStatus[player].stageStep;
-                    if (button === this.stageMoves[currStep]){
+                    console.log(this.stageMoves[currStep]);
+                    if (button == this.stageMoves[currStep]){
                         playerStatus[player].stageStep++;
                         if(playerStatus[player].stageStep === this.stageMoves.length){
                             // TODO: Add score properly
@@ -3104,9 +3104,6 @@ process.umask = function() { return 0; };
                         console.log("Wrong move");
                         playerStatus[player].stageStep = 0;
                     }
-                }
-                if (button === nextMove){
-                    gameState.displayNext(level.shift());
                 }
             },
 

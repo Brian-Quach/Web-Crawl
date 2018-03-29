@@ -2923,7 +2923,7 @@ process.umask = function() { return 0; };
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 2;
+                    var roomCapacity = 1;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -2960,9 +2960,10 @@ process.umask = function() { return 0; };
         var numPlayers = players.length;
         var playerStatus = [];
 
+
+        // TODO: Get from server
         // Temp "Level"
-        var levelStr = "ABCDABCDCBABCDABCDABCD";
-        var nextMove;
+        var levelStr = "ABCDABCDCBABCDABCDABCDABC";
         var level = parseLevel(levelStr);
 
         var mainState = {
@@ -3136,8 +3137,8 @@ process.umask = function() { return 0; };
     function startController(){
         var allRooms = [];
 
-        var gameWidth = 800;
-        var gameHeight = 600;
+        var gameWidth = window.innerWidth;
+        var gameHeight = window.innerHeight;
 
 
         var roomId;
@@ -3162,6 +3163,7 @@ process.umask = function() { return 0; };
                 this.button2 = controller.add.button(gameWidth*(3/8), buttonY, 'button2', this.button2).anchor.setTo(0.5,0.5);
                 this.button3 = controller.add.button(gameWidth*(5/8), buttonY, 'button3', this.button3).anchor.setTo(0.5,0.5);
                 this.button4 = controller.add.button(gameWidth*(7/8), buttonY, 'button4', this.button4).anchor.setTo(0.5,0.5);
+
 
 
                 mobile.requestRoomConnection(roomId, function(err, res){
@@ -3302,8 +3304,7 @@ process.umask = function() { return 0; };
             update: function () {
             },
         };
-
-        var controller = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO);
+        var controller = new Phaser.Game(gameWidth, gameHeight, Phaser.CANVAS);
 
 
         // Add controller states

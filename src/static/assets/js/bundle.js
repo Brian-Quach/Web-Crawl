@@ -2982,7 +2982,7 @@ process.umask = function() { return 0; };
 
             update: function() {
                 // Keep checking for connections
-                if ((gameTimer++ == 10)&&(!gameStarted)){
+                if ((gameTimer++ > 10)&&(!gameStarted)){
                     gameRoomConnect(players, roomId);
                     gameTimer = 0;
                 }
@@ -3035,7 +3035,7 @@ process.umask = function() { return 0; };
 
             update: function() {
                 // Keep checking for connections
-                if (gameTimer++ === 600){
+                if (gameTimer++ > 600){
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 

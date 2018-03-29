@@ -460,9 +460,9 @@
     function startController(){
         var allRooms = [];
 
-        var ratio = window.devicePixelRatio || 1;
-        var gameWidth = window.innerWidth*ratio;
-        var gameHeight = window.innerHeight*ratio;
+        //var ratio = window.devicePixelRatio || 1;
+        var gameWidth = 300//window.innerWidth*ratio;
+        var gameHeight = 400//window.innerHeight*ratio;
 
 
         var roomId;

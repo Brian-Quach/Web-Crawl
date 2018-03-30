@@ -288,10 +288,8 @@
             playerScores.push(null);
         }
 
-        // TODO: Get from server
-        // Temp "Level"
-        var levelStr = "ABCDABCDCBABCDABCDABCDABC";
-        var level = parseLevel(levelStr);
+        var levelStr;
+        var level;
 
         var mainState = {
             preload: function () {
@@ -326,6 +324,12 @@
 
         var gameState = {
             preload: function () {
+
+                // TODO: Get from server
+                // Temp "Level"
+
+                levelStr = "ABCDABCDCBABCDABCDABCDABC";
+                level = parseLevel(levelStr);
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
                 game.load.image('box2', 'assets/img/button2.png');

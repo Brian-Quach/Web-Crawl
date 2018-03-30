@@ -325,8 +325,39 @@
 
             startGame: function () {
                 connectAll(players);
+                game.state.start('preGame', true, true);
+            },
+        };
+
+        var preGameState = {
+            preload: function () {
+                this.countDownTimer = 5.00;
+                this.countDown = game.add.text(game.world.centerX, game.world.centerY, '');
+                this.countDown.anchor.setTo(0.5);
+            },
+
+            create: function () {
+
+            },
+
+            update: function () {
+                this.countDownTimer -= (1/60);
+                if (this.countDownTimer < -1){
+                    preGameState.startGame();
+                }
+
+                if (this.countDownTimer > 0){
+                    this.countDown.setText(Number.parseFloat(this.countDownTimer).toPrecision(3));
+                } else {
+                    this.countDown.setText("Start!");
+                }
+            },
+
+            startGame: function () {
+                this.countDown.destroy();
                 game.state.start('gState', true, true);
             },
+
         };
 
         var gameState = {
@@ -532,7 +563,7 @@
             },
 
             restartGame: function () {
-                game.state.start('main', true, true);
+                game.state.start('preGameState', true, true);
             },
         };
 
@@ -543,6 +574,7 @@
         game.state.add('main', mainState);
         // Add the 'gameState' and call it 'gState'
         game.state.add('gState', gameState);
+        game.state.add('preGame', preGameState);
         game.state.add('winnerState', winnerState);
 
         // Start the state to actually start the game

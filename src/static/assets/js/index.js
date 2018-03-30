@@ -253,6 +253,7 @@
 
 
                 pageBody.appendChild(createRoomName);
+                pageBody.appendChild(createRoomCapacity);
                 pageBody.appendChild(createRoomButton);
 
                 createRoomButton.addEventListener('click', function () {

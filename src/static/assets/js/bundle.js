@@ -2673,10 +2673,10 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],8:[function(require,module,exports){
-(function(){
+(function () {
     "use strict";
 
-	var Peer = require('simple-peer');
+    var Peer = require('simple-peer');
 
     function setCookie(cname, cvalue) {
         document.cookie = cname + "=" + cvalue + ";path=/";
@@ -2685,10 +2685,10 @@ process.umask = function() { return 0; };
     function readCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     }
@@ -2696,44 +2696,44 @@ process.umask = function() { return 0; };
     function checkCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
             if (c.indexOf(nameEQ) == 0) return true;
         }
         return false;
     }
 
-    function setupHostPeer(){
+    function setupHostPeer() {
         var p = new Peer({
             initiator: true,
             trickle: false
         });
 
-        p.on('error', function (err){
+        p.on('error', function (err) {
             console.log('error', err);
-        });
-
-		return p;
-    }
-
-    function setupClientPeer(){
-        var p = new Peer({
-            initiator: false,
-            trickle: false
-        });
-
-        p.on('error', function (err){
-           console.log('error', err);
         });
 
         return p;
     }
 
-    function gameRoomSetup(roomName, capacity){
+    function setupClientPeer() {
+        var p = new Peer({
+            initiator: false,
+            trickle: false
+        });
+
+        p.on('error', function (err) {
+            console.log('error', err);
+        });
+
+        return p;
+    }
+
+    function gameRoomSetup(roomName, capacity) {
 
         // Request room ID from server
-            host.createGameRoom(roomName, capacity, function(err, res){
+        host.createGameRoom(roomName, capacity, function (err, res) {
             var roomId = res;
             //document.getElementById('roomId').innerHTML = roomId;
             var players = [];
@@ -2772,11 +2772,11 @@ process.umask = function() { return 0; };
 
             if (capacity > 0) {
                 var player1 = setupHostPeer();
-                player1.on('signal', function(data){
-                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                player1.on('signal', function (data) {
+                    host.sendConnectionString(roomId, JSON.stringify(data), function (err, res) {
                     });
                 });
-                player1.on('connect', function(){
+                player1.on('connect', function () {
                     var playernum = 1;
                     console.log("Player Connected (%s)", playernum);
 
@@ -2793,11 +2793,11 @@ process.umask = function() { return 0; };
 
             if (capacity > 1) {
                 var player2 = setupHostPeer();
-                player2.on('signal', function(data){
-                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                player2.on('signal', function (data) {
+                    host.sendConnectionString(roomId, JSON.stringify(data), function (err, res) {
                     });
                 });
-                player2.on('connect', function(){
+                player2.on('connect', function () {
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
@@ -2812,11 +2812,11 @@ process.umask = function() { return 0; };
             }
             if (capacity > 2) {
                 var player3 = setupHostPeer();
-                player3.on('signal', function(data){
-                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                player3.on('signal', function (data) {
+                    host.sendConnectionString(roomId, JSON.stringify(data), function (err, res) {
                     });
                 });
-                player3.on('connect', function(){
+                player3.on('connect', function () {
                     var playernum = 3;
                     console.log("Player Connected (%s)", playernum);
 
@@ -2832,11 +2832,11 @@ process.umask = function() { return 0; };
 
             if (capacity > 3) {
                 var player4 = setupHostPeer();
-                player4.on('signal', function(data){
-                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
+                player4.on('signal', function (data) {
+                    host.sendConnectionString(roomId, JSON.stringify(data), function (err, res) {
                     });
                 });
-                player4.on('connect', function(){
+                player4.on('connect', function () {
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
@@ -2853,64 +2853,63 @@ process.umask = function() { return 0; };
             // Caps at 4.
 
 
-/*            document.getElementById('checkRoom').addEventListener('click', function () {
-                gameRoomConnect(players, roomId);
-            });*/
-
+            /*            document.getElementById('checkRoom').addEventListener('click', function () {
+                            gameRoomConnect(players, roomId);
+                        });*/
 
 
             // TODO: Connections set up: Start game stuff below
 
             startGame(players, roomId);
         });
-	}
+    }
 
-	function gameRoomConnect(players, roomId){
-        for (var i=0; i<players.length ; i++){
-            if (players[i].id == null){
-                host.getPlayerConnection(roomId, i, function(err, res){
-                    if (res == ""){
+    function gameRoomConnect(players, roomId) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].id == null) {
+                host.getPlayerConnection(roomId, i, function (err, res) {
+                    if (res == "") {
                         return;
                     }
-                    setCookie("id_Player"+res.playerNum, res.playerId);
-                    setCookie("connectStr_Player"+res.playerNum, res.connectionStr);
+                    setCookie("id_Player" + res.playerNum, res.playerId);
+                    setCookie("connectStr_Player" + res.playerNum, res.connectionStr);
                 });
             }
         }
     }
 
-    function connectAll(players){
-        for (var i=0; i<players.length ; i++){
-            if ((players[i].id == null)&& readCookie("connectStr_Player"+i)){
-                players[i].id = readCookie("id_Player"+i);
-                players[i].peer.signal(readCookie("connectStr_Player"+i));
+    function connectAll(players) {
+        for (var i = 0; i < players.length; i++) {
+            if ((players[i].id == null) && readCookie("connectStr_Player" + i)) {
+                players[i].id = readCookie("id_Player" + i);
+                players[i].peer.signal(readCookie("connectStr_Player" + i));
             }
         }
     }
 
 
-    function welcomeMessage(userType){
-    	var welcome = document.getElementById("title");
-		var message = "Hello " + userType + " user!";
+    function welcomeMessage(userType) {
+        var welcome = document.getElementById("title");
+        var message = "Hello " + userType + " user!";
         welcome.innerHTML = message;
         welcome.setAttribute("UserType", userType);
     }
 
-	function welcomeDeviceType(){
-		api.getDeviceType(function(err, device){
-			if (err) console.log(err);
-		    welcomeMessage(device);
-		});
-	}
+    function welcomeDeviceType() {
+        api.getDeviceType(function (err, device) {
+            if (err) console.log(err);
+            welcomeMessage(device);
+        });
+    }
 
-	function pageSetUp(){
-        api.getDeviceType(function(err, device){
+    function pageSetUp() {
+        api.getDeviceType(function (err, device) {
             if (err) return console.log(err);
             var pageBody = document.getElementById('pageContent');
 
             console.log(device);
 
-            if (device == 'host'){
+            if (device == 'host') {
                 var createRoomName = document.createElement('textarea');
                 createRoomName.placeholder = 'Name of Game Room';
                 createRoomName.required = true;
@@ -2927,9 +2926,9 @@ process.umask = function() { return 0; };
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
-            } else if (device == 'controller'){
+            } else if (device == 'controller') {
                 startController();
-            } else{
+            } else {
                 alert("Device not supported");
             }
 
@@ -2937,21 +2936,20 @@ process.umask = function() { return 0; };
         });
 
 
-
     }
 
-	function displayMessage(msg){
+    function displayMessage(msg) {
         var newMsg = document.createElement('p');
         newMsg.innerHTML = msg;
         document.getElementById('datastream').appendChild(newMsg);
     }
 
-    function parseLevel(levelStr){
+    function parseLevel(levelStr) {
         var level = levelStr.split("");
         return level;
     }
 
-    function startGame(players, roomId ){
+    function startGame(players, roomId) {
         var gameTimer = 0;
         var gameStarted = false;
 
@@ -2960,6 +2958,10 @@ process.umask = function() { return 0; };
         var numPlayers = players.length;
         var playerStatus = [];
 
+        var playerScores = [];
+        while (playerScores.length < players.length){
+            playerScores.push(null);
+        }
 
         // TODO: Get from server
         // Temp "Level"
@@ -2967,12 +2969,12 @@ process.umask = function() { return 0; };
         var level = parseLevel(levelStr);
 
         var mainState = {
-            preload: function() {
+            preload: function () {
                 // This function will be executed at the beginning
                 game.load.image('connectButton', 'assets/img/connect.png');
             },
 
-            create: function() {
+            create: function () {
                 //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
@@ -2981,23 +2983,23 @@ process.umask = function() { return 0; };
                 this.connectButton.anchor.setTo(0.5);
             },
 
-            update: function() {
+            update: function () {
                 // Keep checking for connections
-                if ((gameTimer++ > 10)&&(!gameStarted)){
+                if ((gameTimer++ > 10) && (!gameStarted)) {
                     gameRoomConnect(players, roomId);
                     gameTimer = 0;
                 }
 
             },
 
-            startGame: function() {
+            startGame: function () {
                 connectAll(players);
                 game.state.start('gState', true, true);
             },
         };
 
         var gameState = {
-            preload: function() {
+            preload: function () {
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
                 game.load.image('box2', 'assets/img/button2.png');
@@ -3005,13 +3007,13 @@ process.umask = function() { return 0; };
                 game.load.image('box4', 'assets/img/button4.png');
             },
 
-            create: function() {
+            create: function () {
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#4bf442';
                 this.stageMoves = gameState.nextMoveSet();
 
-                for (var i=0; i<players.length; i++){
+                for (var i = 0; i < players.length; i++) {
 
                     var playerState = {
                         stageComplete: false, // True when stage complete
@@ -3025,23 +3027,23 @@ process.umask = function() { return 0; };
 
                     gameState.createListener(i);
                 }
+                gameState.updateScores();
                 gameTimer = 0;
             },
 
-            createListener: function(playerNum){
+            createListener: function (playerNum) {
                 players[playerNum].peer.on('data', function (data) {
                     gameState.buttonPressed(playerNum, data);
                 });
             },
 
-            update: function() {
-                // Keep checking for connections
-                if (gameTimer++ > 600){
+            update: function () {
+                if (gameTimer++ > 600) {
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
-                    if (this.stageMoves.length !== 0){
-                        for (var i=0; i<playerStatus.length; i++){
+                    if (this.stageMoves.length !== 0) {
+                        for (var i = 0; i < playerStatus.length; i++) {
                             playerStatus[i].stageComplete = false;
                             playerStatus[i].stageStep = 0;
                             playerStatus[i].totalScore += playerStatus[i].stageScore;
@@ -3049,10 +3051,11 @@ process.umask = function() { return 0; };
 
                             gameState.displayMoves(this.stageMoves, i);
                         }
+                        gameState.updateScores();
                     } else {
                         console.log("GameOver");
+                        // TODO: End game state to show scores/winner
                         game.state.start('main', true, true);
-                        // TODO: End game
                     }
 
                     gameTimer = 0;
@@ -3060,26 +3063,42 @@ process.umask = function() { return 0; };
 
             },
 
-            nextMoveSet: function(){
-                var nextMoves = level.splice(0,5);
+            nextMoveSet: function () {
+                var nextMoves = level.splice(0, 5);
                 console.log(nextMoves);
                 return nextMoves;
             },
 
-            displayMoves: function(moves, playerNum){
+            displayMoves: function (moves, playerNum) {
                 console.log(playerNum);
                 console.log(numPlayers);
-                var xPos = gameWidth/(2*numPlayers) + (gameWidth*(playerNum))/numPlayers;
-                var yPos = gameHeight/3 + 50;
+                var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
+                var yPos = gameHeight / 3 + 50;
 
-                for (var i=0; i<moves.length; i++){
+                for (var i = 0; i < moves.length; i++) {
                     console.log(moves[i]);
                     game.add.sprite(xPos, yPos, gameState.decodeMove(moves[i])).anchor.setTo(0.5);
                     yPos += 60;
                 }
             },
 
-            decodeMove: function(move){
+            updateScores: function(){
+                //TODO: Font
+                var yPos = gameHeight / 3 - 50;
+                for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
+                    var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
+                    if(playerScores[playerNum] != null){
+                        playerScores[playerNum].setText("Pts: " + playerStatus[playerNum].totalScore);
+                    } else {
+                        playerScores[playerNum] = game.add.text(xPos, yPos, "Pts: 0");
+                        playerScores[playerNum].anchor.setTo(0.5,0.5);
+                    }
+
+                }
+
+            },
+
+            decodeMove: function (move) {
                 switch (move) {
                     case 'A':
                         return 'box1';
@@ -3092,17 +3111,17 @@ process.umask = function() { return 0; };
                 }
             },
 
-            buttonPressed: function(player, button) {
+            buttonPressed: function (player, button) {
                 console.log(playerStatus);
                 console.log(button + " sent");
-                if (!playerStatus[player].stageComplete){
+                if (!playerStatus[player].stageComplete) {
                     var currStep = playerStatus[player].stageStep;
                     console.log(this.stageMoves[currStep]);
-                    if (button == this.stageMoves[currStep]){
+                    if (button == this.stageMoves[currStep]) {
                         playerStatus[player].stageStep++;
-                        if(playerStatus[player].stageStep === this.stageMoves.length){
+                        if (playerStatus[player].stageStep === this.stageMoves.length) {
                             // TODO: Add score properly
-                            playerStatus[player].stageScore = 500-gameTimer;
+                            playerStatus[player].stageScore = 500 - gameTimer;
                             playerStatus[player].stageComplete = true;
                             console.log("Done!!");
                         }
@@ -3114,7 +3133,7 @@ process.umask = function() { return 0; };
                 }
             },
 
-            endGame: function() {
+            endGame: function () {
                 game.state.start('main', true, true);
             },
 
@@ -3134,19 +3153,18 @@ process.umask = function() { return 0; };
     }
 
 
-    function startController(){
+    function startController() {
         var allRooms = [];
 
         var gameWidth = window.innerWidth;
         var gameHeight = window.innerHeight;
-
 
         var roomId;
         var connection;
 
 
         var mainState = {
-            preload: function() {
+            preload: function () {
                 // This function will be executed at the beginning
                 // That's where we load the images and sounds
                 controller.load.image('button1', 'assets/img/button1.png');
@@ -3155,35 +3173,35 @@ process.umask = function() { return 0; };
                 controller.load.image('button4', 'assets/img/button4.png');
             },
 
-            create: function() {
+            create: function () {
 
                 //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-                var buttonY = gameHeight*(3/4);
+                var buttonY = gameHeight * (3 / 4);
 
                 // Display the buttons
-                var button1 = controller.add.button(gameWidth*(1/8), buttonY, 'button1', this.button1);
-                var button2 = controller.add.button(gameWidth*(3/8), buttonY, 'button2', this.button2);
-                var button3 = controller.add.button(gameWidth*(5/8), buttonY, 'button3', this.button3);
-                var button4 = controller.add.button(gameWidth*(7/8), buttonY, 'button4', this.button4);
+                var button1 = controller.add.button(gameWidth * (1 / 8), buttonY, 'button1', this.button1);
+                var button2 = controller.add.button(gameWidth * (3 / 8), buttonY, 'button2', this.button2);
+                var button3 = controller.add.button(gameWidth * (5 / 8), buttonY, 'button3', this.button3);
+                var button4 = controller.add.button(gameWidth * (7 / 8), buttonY, 'button4', this.button4);
 
-                button1.anchor.setTo(0.5,0.5);
-                button1.scale.setTo(3,3);
-                button2.anchor.setTo(0.5,0.5);
-                button2.scale.setTo(3,3);
-                button3.anchor.setTo(0.5,0.5);
-                button3.scale.setTo(3,3);
-                button4.anchor.setTo(0.5,0.5);
-                button4.scale.setTo(3,3);
+                button1.anchor.setTo(0.5, 0.5);
+                button1.scale.setTo(3, 3);
+                button2.anchor.setTo(0.5, 0.5);
+                button2.scale.setTo(3, 3);
+                button3.anchor.setTo(0.5, 0.5);
+                button3.scale.setTo(3, 3);
+                button4.anchor.setTo(0.5, 0.5);
+                button4.scale.setTo(3, 3);
 
 
-                mobile.requestRoomConnection(roomId, function(err, res){
+                mobile.requestRoomConnection(roomId, function (err, res) {
                     if (err) {
                         console.log(err);
                         return controller.state.start('selectRoom', true, true);
                     } else
 
-                    var playerNumber = res.playerNumber;
+                        var playerNumber = res.playerNumber;
                     var connectionStr = res.connectionString;
 
                     var gameRoom = setupClientPeer();
@@ -3210,25 +3228,25 @@ process.umask = function() { return 0; };
 
             },
 
-            update: function() {
+            update: function () {
                 // This function is called 60 times per second
                 // It contains the game's logic
 
             },
 
-            button1: function() {
+            button1: function () {
                 connection.send("A");
                 console.log("Button1 Pressed");
             },
-            button2: function() {
+            button2: function () {
                 connection.send("B");
                 console.log("Button2 Pressed");
             },
-            button3: function() {
+            button3: function () {
                 connection.send("C");
                 console.log("Button3 Pressed");
             },
-            button4: function() {
+            button4: function () {
                 connection.send("D");
                 console.log("Button4 Pressed");
             }
@@ -3248,7 +3266,7 @@ process.umask = function() { return 0; };
                 //Starts the plugin
                 this.game.kineticScrolling.start();
 
-                this.info = this.game.add.text(controller.world.width*0.01, controller.world.height*0.01, "Select Room To Join", {
+                this.info = this.game.add.text(controller.world.width * 0.01, controller.world.height * 0.01, "Select Room To Join", {
                     font: "22px Arial",
                     fill: "#ffffff"
                 });
@@ -3264,7 +3282,7 @@ process.umask = function() { return 0; };
                     newButton.events.onInputUp.add(selectState.selectLevel, {id: btnId});
                     this.levels.push(newButton);
                     this.index = this.game.add.text(initX + 125, this.game.world.centerY, allRooms[i].roomName,
-                        { font: '50px Arial', align: "center" });
+                        {font: '50px Arial', align: "center"});
                     this.index.anchor.set(0.5);
                     initX += 300;
                 }
@@ -3287,16 +3305,16 @@ process.umask = function() { return 0; };
                 return newButton;
             },
 
-            selectLevel: function(){
+            selectLevel: function () {
                 roomId = this.id;
                 controller.state.start('main', true, true);
             }
         };
 
-        var loadingState ={
+        var loadingState = {
             init: function () {
-                this.roomsPromise = new Promise(function (resolve, reject){
-                    mobile.listAllRooms(function(err, allRooms){
+                this.roomsPromise = new Promise(function (resolve, reject) {
+                    mobile.listAllRooms(function (err, allRooms) {
                         if (err) reject(err);
                         resolve(allRooms);
                     });
@@ -3304,10 +3322,10 @@ process.umask = function() { return 0; };
             },
 
             create: function () {
-                this.roomsPromise.then(function(result){
+                this.roomsPromise.then(function (result) {
                     allRooms = result;
                     controller.state.start('selectRoom', true, true);
-                }, function(err){
+                }, function (err) {
                     console.log(err);
                 })
             },
@@ -3333,7 +3351,7 @@ process.umask = function() { return 0; };
         return controller;
     }
 
-    window.addEventListener('load', function(){
+    window.addEventListener('load', function () {
         pageSetUp();
         //testScroll();
 

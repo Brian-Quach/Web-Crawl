@@ -2922,7 +2922,7 @@ process.umask = function() { return 0; };
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 1;
+                    var roomCapacity = 2;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -2971,6 +2971,7 @@ process.umask = function() { return 0; };
         var mainState = {
             preload: function () {
                 // This function will be executed at the beginning
+                //TODO: Change this to "START GAME" button or something
                 game.load.image('connectButton', 'assets/img/connect.png');
             },
 
@@ -3038,7 +3039,7 @@ process.umask = function() { return 0; };
             },
 
             update: function () {
-                if (gameTimer++ > 600) {
+                if (gameTimer++ > 300) {
                     //TODO: Update scores
                     this.stageMoves = gameState.nextMoveSet();
 
@@ -3055,12 +3056,12 @@ process.umask = function() { return 0; };
                     } else {
                         console.log("GameOver");
                         // TODO: End game state to show scores/winner
-                        game.state.start('main', true, true);
+                        gameState.endGame();
                     }
 
                     gameTimer = 0;
                 }
-
+                console.log(gameTimer);
             },
 
             nextMoveSet: function () {
@@ -3134,10 +3135,48 @@ process.umask = function() { return 0; };
             },
 
             endGame: function () {
-                game.state.start('main', true, true);
+                game.state.start('winnerState', true, true);
             },
 
         };
+
+        var winnerState = {
+            preload: function () {
+                // This function will be executed at the beginning
+                game.load.image('nextButton', 'assets/img/connect.png');
+            },
+
+            create: function () {
+                //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                // This function is called after the preload function
+                // Here we set up the game, display sprites, etc.
+                game.stage.backgroundColor = '#71c5cf';
+                this.connectButton = game.add.button(game.world.centerX, game.world.centerY*(3/4), 'nextButton', this.restartGame);
+                this.connectButton.anchor.setTo(0.5);
+
+                var winnerPlayer = null;
+                var winnerScore = -1;
+
+                for (var i=0; i<playerStatus.length; i++){
+                    if (playerStatus[i].totalScore > winnerScore){
+                        winnerPlayer = i+1;
+                        winnerScore = playerStatus[i].totalScore;
+                    }
+                }
+
+                this.winnerText = game.add.text(game.world.centerX, game.world.centerY, "Winner: Player "+ winnerPlayer + "\nScore: " + winnerScore);
+                this.winnerText.anchor.setTo(0.5,0.5);
+            },
+
+            update: function () {
+
+            },
+
+            restartGame: function () {
+                game.state.start('main', true, true);
+            },
+        };
+
 
         var game = new Phaser.Game(gameWidth, gameHeight, Phaser.AUTO);
 
@@ -3145,6 +3184,7 @@ process.umask = function() { return 0; };
         game.state.add('main', mainState);
         // Add the 'gameState' and call it 'gState'
         game.state.add('gState', gameState);
+        game.state.add('winnerState', winnerState);
 
         // Start the state to actually start the game
         game.state.start('main');
@@ -3356,7 +3396,7 @@ process.umask = function() { return 0; };
         //testScroll();
 
     });
-}())
+}());
 
 
 

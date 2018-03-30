@@ -425,7 +425,7 @@
                     stepsDisplayed[playerNum].steps[i].anchor.setTo(0.5);
 
                     if (i===0){
-                        if (stepsDisplayed[playerNum].marker === null){
+                        if (stepsDisplayed[playerNum].marker !== null){
                             stepsDisplayed[playerNum].marker.destroy();
                         }
                         stepsDisplayed[playerNum].marker = game.add.sprite(xPos, yPos, 'stepMarker');

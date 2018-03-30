@@ -227,6 +227,7 @@
         });
     }
 
+
     function pageSetUp() {
         api.getDeviceType(function (err, device) {
             if (err) return console.log(err);
@@ -239,15 +240,24 @@
                 createRoomName.placeholder = 'Name of Game Room';
                 createRoomName.required = true;
 
+                var createRoomCapacity = document.createElement('select');
+                createRoomCapacity.innerHTML =
+                    "<option value=1 disabled selected hidden>Room Capacity</option>" +
+                    "<option value=1>1</option>" +
+                    "<option value=2>2</option>" +
+                    "<option value=3>3</option>" +
+                    "<option value=4>4</option>";
+
                 var createRoomButton = document.createElement('button');
                 createRoomButton.innerHTML = 'Create Game Room';
+
 
                 pageBody.appendChild(createRoomName);
                 pageBody.appendChild(createRoomButton);
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 1;
+                    var roomCapacity = createRoomCapacity.value;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -563,7 +573,7 @@
             },
 
             restartGame: function () {
-                game.state.start('preGameState', true, true);
+                game.state.start('preGame', true, true);
             },
         };
 

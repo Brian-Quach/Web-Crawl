@@ -247,7 +247,7 @@
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 2;
+                    var roomCapacity = 1;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -284,12 +284,19 @@
         var playerStatus = [];
 
         var playerScores = [];
+        var stepsDisplayed = [];
         while (playerScores.length < players.length){
             playerScores.push(null);
+            var steps = {
+                marker: null,
+                steps: [null, null, null, null, null]
+            };
+            stepsDisplayed.push(steps);
         }
 
         var levelStr;
         var level;
+
 
         var mainState = {
             preload: function () {
@@ -335,6 +342,7 @@
                 game.load.image('box2', 'assets/img/button2.png');
                 game.load.image('box3', 'assets/img/button3.png');
                 game.load.image('box4', 'assets/img/button4.png');
+                game.load.image('stepMarker', 'assets/img/stepMarker.png');
             },
 
             create: function () {
@@ -405,9 +413,25 @@
                 var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
                 var yPos = gameHeight / 3 + 50;
 
-                for (var i = 0; i < moves.length; i++) {
+                for (var i=0; i<stepsDisplayed[playerNum].length; i++){
+                    if (stepsDisplayed[playerNum].steps[i] !== null){
+                        stepsDisplayed[playerNum].steps[i].destroy();
+                    }
+                }
+
+                for (i=0; i < moves.length; i++) {
                     console.log(moves[i]);
-                    game.add.sprite(xPos, yPos, gameState.decodeMove(moves[i])).anchor.setTo(0.5);
+                    stepsDisplayed[playerNum].steps[i] = game.add.sprite(xPos, yPos, gameState.decodeMove(moves[i]));
+                    stepsDisplayed[playerNum].steps[i].anchor.setTo(0.5);
+
+                    if (i===0){
+                        if (stepsDisplayed[playerNum].marker === null){
+                            stepsDisplayed[playerNum].marker.destroy();
+                        }
+                        stepsDisplayed[playerNum].marker = game.add.sprite(xPos, yPos, 'stepMarker');
+                        stepsDisplayed[playerNum].marker.anchor.setTo(0.5);
+                    }
+
                     yPos += 60;
                 }
             },
@@ -442,6 +466,9 @@
             },
 
             buttonPressed: function (player, button) {
+
+                var yPos = gameHeight / 3 + 50;
+
                 console.log(playerStatus);
                 console.log(button + " sent");
                 if (!playerStatus[player].stageComplete) {
@@ -450,14 +477,17 @@
                     if (button == this.stageMoves[currStep]) {
                         playerStatus[player].stageStep++;
                         if (playerStatus[player].stageStep === this.stageMoves.length) {
-                            // TODO: Add score properly
                             playerStatus[player].stageScore = 500 - gameTimer;
                             playerStatus[player].stageComplete = true;
                             console.log("Done!!");
+                        } else {
+                            yPos += 60*playerStatus[player].stageStep;
+                            game.add.tween(stepsDisplayed[player].marker).to({y:yPos},100, Phaser.Easing.Bounce.Out, true);
                         }
 
                     } else {
                         console.log("Wrong move");
+                        game.add.tween(stepsDisplayed[player].marker).to({y:yPos},100, Phaser.Easing.Bounce.Out, true);
                         playerStatus[player].stageStep = 0;
                     }
                 }

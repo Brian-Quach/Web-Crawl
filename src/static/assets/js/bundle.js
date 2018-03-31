@@ -3257,6 +3257,14 @@ process.umask = function() { return 0; };
                 playerStatus = [];
                 playerScores = [];
                 stepsDisplayed = [];
+                while (playerScores.length < players.length){
+                    playerScores.push(null);
+                    var steps = {
+                        marker: null,
+                        steps: [null, null, null, null, null]
+                    };
+                    stepsDisplayed.push(steps);
+                }
                 game.state.start('preGame', true, true);
             },
         };

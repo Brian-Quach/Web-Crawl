@@ -179,25 +179,6 @@ app.get('/api/getConnection/:roomId/:playerNum/', function(req, res){
 
 
 // TODO: User DB
-var Level1 = new Level(0, "Level1", "ABCDABCDABCDBABCD!");
-var Level2 = new Level(1, "Level2", "AAABBBCCCDDDAAABB!");
-var Level3 = new Level(2, "Level3", "ABABABABABADBDBDB!");
-var Level4 = new Level(3, "Level4", "AAACCCCCCDDDDAAA!");
-var Level5 = new Level(4, "Level5", "ACBDBCADBCADDDDAA!");
-var allLevels = [Level1, Level2, Level3, Level4, Level5];
-
-
-app.get('/api/allLevels/', function(req, res){
-    var levelList = [];
-    for (var i=0; i<allLevels.length; i++){
-        levelList.push({id: allLevels[i].id, name: allLevels[i].name});
-    }
-    return res.json(levelList);
-});
-
-app.get('/api/getLevel/:id/', function(req, res){
-    return res.json(allLevels[req.params.id].level);
-});
 
 const https = require('https');
 const PORT = 3000;

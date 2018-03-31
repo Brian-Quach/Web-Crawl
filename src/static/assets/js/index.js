@@ -212,7 +212,6 @@
         }
     }
 
-
     function welcomeMessage(userType) {
         var welcome = document.getElementById("title");
         var message = "Hello " + userType + " user!";
@@ -226,7 +225,6 @@
             welcomeMessage(device);
         });
     }
-
 
     function pageSetUp() {
         api.getDeviceType(function (err, device) {
@@ -278,6 +276,16 @@
         var newMsg = document.createElement('p');
         newMsg.innerHTML = msg;
         document.getElementById('datastream').appendChild(newMsg);
+    }
+
+    function generateLevelString(len){
+        var levelStr = "";
+
+        while(levelStr.length < len){
+            levelStr += "ABCD".charAt(Math.floor(Math.random() * 4));
+        }
+
+        return levelStr;
     }
 
     function parseLevel(levelStr) {
@@ -373,11 +381,12 @@
 
         var gameState = {
             preload: function () {
+                this.stepMap = {'A': 'box1', 'B': 'box2', 'C': 'box3' , 'D': 'box4'};
 
                 // TODO: Get from server
                 // Temp "Level"
 
-                levelStr = "ABCDABCDCBABCDABCDABCDABC";
+                levelStr = generateLevelString(60);
                 level = parseLevel(levelStr);
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
@@ -495,16 +504,7 @@
             },
 
             decodeMove: function (move) {
-                switch (move) {
-                    case 'A':
-                        return 'box1';
-                    case 'B':
-                        return 'box2';
-                    case 'C':
-                        return 'box3';
-                    case 'D':
-                        return 'box4';
-                }
+                return this.stepMap[move];
             },
 
             buttonPressed: function (player, button) {
@@ -552,6 +552,7 @@
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
+                //TODO: Exit button
                 this.connectButton = game.add.button(game.world.centerX, game.world.centerY*(3/4), 'nextButton', this.restartGame);
                 this.connectButton.anchor.setTo(0.5);
 
@@ -714,15 +715,15 @@
                 });
                 this.info.fixedToCamera = true;
 
-                this.levels = [];
+                this.rooms = [];
 
                 var initX = 50;
 
                 for (var i = 0; i < allRooms.length; i++) {
                     var newButton = this.createButton(initX, this.game.world.centerY - 100, 250, 200);
                     var btnId = allRooms[i].roomId;
-                    newButton.events.onInputUp.add(selectState.selectLevel, {id: btnId});
-                    this.levels.push(newButton);
+                    newButton.events.onInputUp.add(selectState.selectRoom, {id: btnId});
+                    this.rooms.push(newButton);
                     this.index = this.game.add.text(initX + 125, this.game.world.centerY, allRooms[i].roomName,
                         {font: '50px Arial', align: "center"});
                     this.index.anchor.set(0.5);
@@ -730,7 +731,7 @@
                 }
 
                 //Changing the world width
-                this.game.world.setBounds(0, 0, 302 * this.levels.length, this.game.height);
+                this.game.world.setBounds(0, 0, 302 * this.rooms.length, this.game.height);
             },
 
 
@@ -747,7 +748,7 @@
                 return newButton;
             },
 
-            selectLevel: function () {
+            selectRoom: function () {
                 roomId = this.id;
                 controller.state.start('main', true, true);
             }

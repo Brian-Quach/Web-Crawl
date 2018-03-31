@@ -2887,7 +2887,6 @@ process.umask = function() { return 0; };
         }
     }
 
-
     function welcomeMessage(userType) {
         var welcome = document.getElementById("title");
         var message = "Hello " + userType + " user!";
@@ -2914,15 +2913,25 @@ process.umask = function() { return 0; };
                 createRoomName.placeholder = 'Name of Game Room';
                 createRoomName.required = true;
 
+                var createRoomCapacity = document.createElement('select');
+                createRoomCapacity.innerHTML =
+                    "<option value=1 disabled selected hidden>Room Capacity</option>" +
+                    "<option value=1>1</option>" +
+                    "<option value=2>2</option>" +
+                    "<option value=3>3</option>" +
+                    "<option value=4>4</option>";
+
                 var createRoomButton = document.createElement('button');
                 createRoomButton.innerHTML = 'Create Game Room';
 
+
                 pageBody.appendChild(createRoomName);
+                pageBody.appendChild(createRoomCapacity);
                 pageBody.appendChild(createRoomButton);
 
                 createRoomButton.addEventListener('click', function () {
                     var roomName = createRoomName.value;
-                    var roomCapacity = 1;
+                    var roomCapacity = createRoomCapacity.value;
                     pageBody.style.display = "none";
                     gameRoomSetup(roomName, roomCapacity);
                 });
@@ -2953,7 +2962,7 @@ process.umask = function() { return 0; };
         var gameTimer = 0;
         var gameStarted = false;
 
-        var gameWidth = 800;
+        var gameWidth = 1000;
         var gameHeight = 600;
         var numPlayers = players.length;
         var playerStatus = [];
@@ -3037,6 +3046,10 @@ process.umask = function() { return 0; };
 
         var gameState = {
             preload: function () {
+                // Create space for leader board and timer
+                gameWidth = gameWidth*.8;
+
+                this.stepMap = {'A': 'box1', 'B': 'box2', 'C': 'box3' , 'D': 'box4'};
 
                 // TODO: Get from server
                 // Temp "Level"
@@ -3159,16 +3172,7 @@ process.umask = function() { return 0; };
             },
 
             decodeMove: function (move) {
-                switch (move) {
-                    case 'A':
-                        return 'box1';
-                    case 'B':
-                        return 'box2';
-                    case 'C':
-                        return 'box3';
-                    case 'D':
-                        return 'box4';
-                }
+                return this.stepMap[move];
             },
 
             buttonPressed: function (player, button) {
@@ -3200,6 +3204,7 @@ process.umask = function() { return 0; };
             },
 
             endGame: function () {
+                gameWidth = gameWidth/.8;
                 game.state.start('winnerState', true, true);
             },
 
@@ -3238,7 +3243,7 @@ process.umask = function() { return 0; };
             },
 
             restartGame: function () {
-                game.state.start('preGameState', true, true);
+                game.state.start('preGame', true, true);
             },
         };
 
@@ -3378,15 +3383,15 @@ process.umask = function() { return 0; };
                 });
                 this.info.fixedToCamera = true;
 
-                this.levels = [];
+                this.rooms = [];
 
                 var initX = 50;
 
                 for (var i = 0; i < allRooms.length; i++) {
                     var newButton = this.createButton(initX, this.game.world.centerY - 100, 250, 200);
                     var btnId = allRooms[i].roomId;
-                    newButton.events.onInputUp.add(selectState.selectLevel, {id: btnId});
-                    this.levels.push(newButton);
+                    newButton.events.onInputUp.add(selectState.selectRoom, {id: btnId});
+                    this.rooms.push(newButton);
                     this.index = this.game.add.text(initX + 125, this.game.world.centerY, allRooms[i].roomName,
                         {font: '50px Arial', align: "center"});
                     this.index.anchor.set(0.5);
@@ -3394,7 +3399,7 @@ process.umask = function() { return 0; };
                 }
 
                 //Changing the world width
-                this.game.world.setBounds(0, 0, 302 * this.levels.length, this.game.height);
+                this.game.world.setBounds(0, 0, 302 * this.rooms.length, this.game.height);
             },
 
 
@@ -3411,7 +3416,7 @@ process.umask = function() { return 0; };
                 return newButton;
             },
 
-            selectLevel: function () {
+            selectRoom: function () {
                 roomId = this.id;
                 controller.state.start('main', true, true);
             }

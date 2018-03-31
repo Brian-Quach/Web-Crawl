@@ -5,6 +5,14 @@ const app = express();
 const fs = require('fs');
 var device = require('express-device');
 
+
+const session = require('express-session');
+app.use(session({
+    secret: 'Hellllooooooooooo!',
+    resave: false,
+    saveUninitialized: true,
+
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -17,12 +25,17 @@ var options = {
 };
 
 var redis = require('redis');
-/*var client = redis.createClient(options);
+
+//var client = redis.createClient(options);
+var client = redis.createClient(6379, "briiquach.com", options);
 
 client.on('error', function(err){
-    // Fall back to url if not connecting locally
-    client = redis.createClient(6379, "briiquach.com", options);
-})*/
+    console.log(err);
+})
+
+client.on('connect', function() {
+    console.log('connected');
+});
 
 var Connection = function(hostString){
     this.hostString = hostString;
@@ -37,6 +50,15 @@ var GameRoom = function (id, roomName, capacity){
     this.players = [];
 };
 
+var User = function(username, password){
+    this.username = username;
+    this.password = password;
+    this.avatar = 0;
+    this.experience = 0;
+    this.highScore = 0;
+    this.gamesPlayed = 0;
+}
+
 var host_platforms = ['desktop'];
 var mobile_platforms = ['phone','tablet'];
 
@@ -44,19 +66,37 @@ var rooms = [];
 var roomsnext = 0;
 
 
-var Level = function(levelId, levelName, steps){
-    this.id = levelId;
-    this.name = levelName;
-    this.level = steps;
-    //this.song = song;
-    //this.recordholder = recordHolderName;
-    //this.highscore = highscore;
-};
-
 // Log Http requests to console
 app.use(function (req, res, next){
     console.log("HTTP request", req.method, req.url, req.body);
     next();
+});
+
+
+// userName, password
+app.post('/api/signUp/', function(req,res){
+    client.exists(req.body.username , function(err, reply) {
+        if (reply === 1) {
+            return res.status(500).end("User already exists");
+        } else {
+            var newUser = new User(req.body.username, req.body.password);
+            console.log(newUser);
+            client.hmset(req.body.username, newUser);
+            return res.json("User added");
+        }
+    });
+});
+
+app.post('/api/signIn/', function(req, res){
+    client.hgetall(req.body.username, function(err, account) {
+        if (err) return console.log(err);
+        if (account === null){
+            return res.status(500).end("User doesn't exists");
+        } else {
+            if (account.password == req.body.password) return res.json(account.username);
+            else return res.status(500).end("Incorrect Password");
+        }
+    });
 });
 
 // Get device type

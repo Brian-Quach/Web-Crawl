@@ -227,6 +227,7 @@
     }
 
     function pageSetUp() {
+
         api.getDeviceType(function (err, device) {
             if (err) return console.log(err);
             var pageBody = document.getElementById('pageContent');
@@ -234,34 +235,9 @@
             console.log(device);
 
             if (device == 'host') {
-                var createRoomName = document.createElement('textarea');
-                createRoomName.placeholder = 'Name of Game Room';
-                createRoomName.required = true;
-
-                var createRoomCapacity = document.createElement('select');
-                createRoomCapacity.innerHTML =
-                    "<option value=1 disabled selected hidden>Room Capacity</option>" +
-                    "<option value=1>1</option>" +
-                    "<option value=2>2</option>" +
-                    "<option value=3>3</option>" +
-                    "<option value=4>4</option>";
-
-                var createRoomButton = document.createElement('button');
-                createRoomButton.innerHTML = 'Create Game Room';
-
-
-                pageBody.appendChild(createRoomName);
-                pageBody.appendChild(createRoomCapacity);
-                pageBody.appendChild(createRoomButton);
-
-                createRoomButton.addEventListener('click', function () {
-                    var roomName = createRoomName.value;
-                    var roomCapacity = createRoomCapacity.value;
-                    pageBody.style.display = "none";
-                    gameRoomSetup(roomName, roomCapacity);
-                });
+                hostSetUp(pageBody);
             } else if (device == 'controller') {
-                startController();
+                controllerSetUp(pageBody);
             } else {
                 alert("Device not supported");
             }
@@ -269,6 +245,53 @@
 
         });
 
+
+    }
+
+    function hostSetUp(pageBody){
+        var createRoomName = document.createElement('textarea');
+        createRoomName.placeholder = 'Name of Game Room';
+        createRoomName.required = true;
+
+        var createRoomCapacity = document.createElement('select');
+        createRoomCapacity.innerHTML =
+            "<option value=1 disabled selected hidden>Room Capacity</option>" +
+            "<option value=1>1</option>" +
+            "<option value=2>2</option>" +
+            "<option value=3>3</option>" +
+            "<option value=4>4</option>";
+
+        var createRoomButton = document.createElement('button');
+        createRoomButton.innerHTML = 'Create Game Room';
+
+
+        pageBody.appendChild(createRoomName);
+        pageBody.appendChild(createRoomCapacity);
+        pageBody.appendChild(createRoomButton);
+
+        createRoomButton.addEventListener('click', function () {
+            var roomName = createRoomName.value;
+            var roomCapacity = createRoomCapacity.value;
+            pageBody.style.display = "none";
+            gameRoomSetup(roomName, roomCapacity);
+        });
+    };
+
+    function controllerSetUp(pageBody){
+        if (api.getCurrentUser() !== null){
+            startController();
+        } else {
+            loginSetUp(pageBody);
+        }
+
+    };
+
+    function loginSetUp(pageBody){
+        var loginButton = document.createElement('a');
+        loginButton.href = "/login.html";
+        loginButton.text = "Log In or Create Account";
+
+        pageBody.appendChild(loginButton);
 
     }
 

@@ -579,6 +579,9 @@
 
             restartGame: function () {
                 firstGame = false;
+                playerStatus = [];
+                playerScores = [];
+                stepsDisplayed = [];
                 game.state.start('preGame', true, true);
             },
         };

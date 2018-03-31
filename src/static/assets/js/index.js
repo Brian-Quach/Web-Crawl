@@ -296,6 +296,7 @@
     function startGame(players, roomId) {
         var gameTimer = 0;
         var gameStarted = false;
+        var firstGame = true;
 
         var gameWidth = 800;
         var gameHeight = 600;
@@ -414,7 +415,9 @@
                     playerStatus.push(playerState);
                     gameState.displayMoves(this.stageMoves, i);
 
-                    gameState.createListener(i);
+                    if (firstGame){
+                        gameState.createListener(i);
+                    }
                 }
                 gameState.updateScores();
                 gameTimer = 0;
@@ -575,6 +578,7 @@
             },
 
             restartGame: function () {
+                firstGame = false;
                 game.state.start('preGame', true, true);
             },
         };

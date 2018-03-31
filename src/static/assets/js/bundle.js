@@ -2953,6 +2953,16 @@ process.umask = function() { return 0; };
         document.getElementById('datastream').appendChild(newMsg);
     }
 
+    function generateLevelString(len){
+        var levelStr = "";
+
+        while(levelStr.length < len){
+            levelStr += "ABCD".charAt(Math.floor(Math.random() * 4));
+        }
+
+        return levelStr;
+    }
+
     function parseLevel(levelStr) {
         var level = levelStr.split("");
         return level;
@@ -2961,8 +2971,9 @@ process.umask = function() { return 0; };
     function startGame(players, roomId) {
         var gameTimer = 0;
         var gameStarted = false;
+        var firstGame = true;
 
-        var gameWidth = 1000;
+        var gameWidth = 800;
         var gameHeight = 600;
         var numPlayers = players.length;
         var playerStatus = [];
@@ -3046,15 +3057,12 @@ process.umask = function() { return 0; };
 
         var gameState = {
             preload: function () {
-                // Create space for leader board and timer
-                gameWidth = gameWidth*.8;
-
                 this.stepMap = {'A': 'box1', 'B': 'box2', 'C': 'box3' , 'D': 'box4'};
 
                 // TODO: Get from server
                 // Temp "Level"
 
-                levelStr = "ABCDABCDCBABCDABCDABCDABC";
+                levelStr = generateLevelString(60);
                 level = parseLevel(levelStr);
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
@@ -3082,7 +3090,9 @@ process.umask = function() { return 0; };
                     playerStatus.push(playerState);
                     gameState.displayMoves(this.stageMoves, i);
 
-                    gameState.createListener(i);
+                    if (firstGame){
+                        gameState.createListener(i);
+                    }
                 }
                 gameState.updateScores();
                 gameTimer = 0;
@@ -3204,7 +3214,6 @@ process.umask = function() { return 0; };
             },
 
             endGame: function () {
-                gameWidth = gameWidth/.8;
                 game.state.start('winnerState', true, true);
             },
 
@@ -3221,6 +3230,7 @@ process.umask = function() { return 0; };
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
+                //TODO: Exit button
                 this.connectButton = game.add.button(game.world.centerX, game.world.centerY*(3/4), 'nextButton', this.restartGame);
                 this.connectButton.anchor.setTo(0.5);
 
@@ -3243,6 +3253,7 @@ process.umask = function() { return 0; };
             },
 
             restartGame: function () {
+                firstGame = false;
                 game.state.start('preGame', true, true);
             },
         };

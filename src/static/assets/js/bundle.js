@@ -3167,6 +3167,7 @@ process.umask = function() { return 0; };
                     if(playerScores[playerNum] != null){
                         playerScores[playerNum].setText("Pts: " + playerStatus[playerNum].totalScore);
                     } else {
+                        console.log(playerStatus[playerNum]);
                         playerScores[playerNum] = game.add.text(xPos, yPos, playerStatus[playerNum].username + "\nPts: 0");
                         playerScores[playerNum].anchor.setTo(0.5,0.5);
                     }

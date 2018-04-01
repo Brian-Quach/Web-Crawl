@@ -21,8 +21,8 @@ var mobile = (function(){
         send("GET", "/api/allrooms/" , null, callback);
     }
 
-    module.requestRoomConnection = function(roomId, callback){
-        send("GET", "/api/requestConnection/" + roomId + "/", null, callback);
+    module.requestRoomConnection = function(roomId, username, callback){
+        send("GET", "/api/requestConnection/" + roomId + "/" + username + "/", null, callback);
     }
 
     module.connectToRoom = function(roomId, playerNum, connectionStr, callback){

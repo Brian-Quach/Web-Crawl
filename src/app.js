@@ -40,9 +40,9 @@ client.on('connect', function () {
 });
 
 var Connection = function (hostString) {
+    this.username = null;
     this.hostString = hostString;
     this.peerString = null;
-    this.playerId = -1; // Will be used for account identification
 };
 
 var GameRoom = function (id, roomName, capacity) {
@@ -208,9 +208,11 @@ app.post('/api/newpeer/', function (req, res) {
 
 // Get connection string for requested room
 // curl -H "Content-Type: application/json" -X GET -d '{"roomId":0}' localhost:3000/api/requestConnection
-app.get('/api/requestConnection/:roomId/', function (req, res) {
+app.get('/api/requestConnection/:roomId/:username/', function (req, res) {
     var roomId = req.params.roomId;
+    var username = req.params.username;
     console.log(roomId);
+    console.log(username);
     for (var i = 0; i < rooms.length; i++) {
         if (rooms[i].id == roomId) {
             var room = rooms[i];
@@ -221,6 +223,7 @@ app.get('/api/requestConnection/:roomId/', function (req, res) {
                         connectionString: room.players[j].hostString
                     };
                     room.players[j].peerString = "Waiting";
+                    room.players[j].username = username;
                     return res.json(ret);
                 }
             }

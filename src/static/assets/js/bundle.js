@@ -3353,7 +3353,8 @@ process.umask = function() { return 0; };
                 button4.scale.setTo(3, 3);
 
 
-                mobile.requestRoomConnection(roomId, function (err, res) {
+                var currUser =  api.getCurrentUser();
+                mobile.requestRoomConnection(roomId, currUser, function (err, res) {
                     if (err) {
                         console.log(err);
                         return controller.state.start('selectRoom', true, true);

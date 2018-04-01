@@ -490,7 +490,7 @@
                 for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
                     var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
                     if(playerScores[playerNum] != null){
-                        playerScores[playerNum].setText("Pts: " + playerStatus[playerNum].totalScore);
+                        playerScores[playerNum].setText(playerStatus[playerNum].username + "\nPts: " + playerStatus[playerNum].totalScore);
                     } else {
                         console.log(playerStatus[playerNum]);
                         playerScores[playerNum] = game.add.text(xPos, yPos, playerStatus[playerNum].username + "\nPts: 0");

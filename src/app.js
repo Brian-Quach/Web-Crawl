@@ -33,7 +33,7 @@ var client = redis.createClient(6379, "briiquach.com", options);
 
 client.on('error', function (err) {
     console.log(err);
-})
+});
 
 client.on('connect', function () {
     console.log('connected');
@@ -59,7 +59,7 @@ var User = function (username, password) {
     this.experience = 0;
     this.highScore = 0;
     this.gamesPlayed = 0;
-}
+};
 
 var host_platforms = ['desktop'];
 var mobile_platforms = ['phone', 'tablet'];
@@ -92,7 +92,7 @@ app.post('/api/signUp/', function (req, res) {
                 maxAge: 60 * 60 * 24 * 7
             }));
             req.session.username = username;
-            return res.json("User added");
+            return res.json("Account Created");
         }
     });
 });
@@ -116,6 +116,44 @@ app.post('/api/signIn/', function (req, res) {
         }
     });
 });
+
+
+app.get('/api/signout/', function (req, res) {
+    res.setHeader('Set-Cookie', cookie.serialize('username', '', {
+        path : '/',
+        maxAge: 60 * 60 * 24 * 7 // 1 week in number of seconds
+    }));
+    req.session.username = '';
+    res.redirect('/');
+});
+
+app.get('/api/getlevel/:username/', function (req, res){
+    var username = req.params.username;
+    client.hgetall(username, function (err, account) {
+        if (err) return console.log(err);
+        if (account === null) return res.status(500).end("User doesn't exists");
+        var userXp =  parseInt(account.experience);
+        var userLevel = {
+            level: Math.floor(userXp/10000),
+            xp: userXp%10000
+        };
+        return res.json(userLevel); //TODO: return something useful
+    });
+});
+
+app.post('/api/givexp/', function (req, res){
+    var username = req.body.username;
+    var exp = req.body.experience;
+    client.hgetall(username, function (err, account) {
+        if (err) return console.log(err);
+        if (account === null) return res.status(500).end("User doesn't exists");
+        var userXp =  parseInt(account.experience);
+        userXp += exp;
+        client.hmset(username, "experience", userXp);
+        return res.json(userXp); //TODO: return something useful
+    });
+});
+
 
 // Get device type
 app.get('/api/device/', function (req, res) {
@@ -177,7 +215,7 @@ app.get('/api/requestConnection/:roomId/', function (req, res) {
         if (rooms[i].id == roomId) {
             var room = rooms[i];
             for (var j = 0; j < room.players.length; j++) {
-                if (room.players[j].peerString == null) {
+                if (room.players[j].peerString === null) {
                     var ret = {
                         playerNumber: j,
                         connectionString: room.players[j].hostString
@@ -219,7 +257,7 @@ app.get('/api/getConnection/:roomId/:playerNum/', function (req, res) {
     for (var i = 0; i < rooms.length; i++) {
         if (rooms[i].id == roomId) {
             var player = rooms[i].players[playerNum];
-            if ((player.peerString == "Waiting") || (player.peerString == null)) {
+            if ((player.peerString == "Waiting") || (player.peerString === null)) {
                 return res.json("");
             }
             var connectionStr = player.peerString;

@@ -43,6 +43,7 @@ var Connection = function (hostString) {
     this.username = null;
     this.hostString = hostString;
     this.peerString = null;
+    this.playerId = -1;
 };
 
 var GameRoom = function (id, roomName, capacity) {
@@ -257,6 +258,7 @@ app.get('/api/getConnection/:roomId/:playerNum/', function (req, res) {
     var roomId = req.params.roomId;
     var playerNum = req.params.playerNum;
 
+
     for (var i = 0; i < rooms.length; i++) {
         if (rooms[i].id == roomId) {
             var player = rooms[i].players[playerNum];
@@ -264,7 +266,9 @@ app.get('/api/getConnection/:roomId/:playerNum/', function (req, res) {
                 return res.json("");
             }
             var connectionStr = player.peerString;
+            var username = player.username;
             var ret = {
+                username: username,
                 playerNum: playerNum,
                 playerId: player.playerId,
                 connectionStr: connectionStr

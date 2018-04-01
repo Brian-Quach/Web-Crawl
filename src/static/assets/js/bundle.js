@@ -2735,40 +2735,8 @@ process.umask = function() { return 0; };
         // Request room ID from server
         host.createGameRoom(roomName, capacity, function (err, res) {
             var roomId = res;
-            //document.getElementById('roomId').innerHTML = roomId;
+
             var players = [];
-
-            // UNWRAPPED THIS CODE - NOT REALLY SURE HOW TO RUN DYNAMICALLY - TEMP SOLN
-            /*
-            for (var i=0; i<capacity; i++){
-                var curr_i = i;
-                var newPlayer = setupHostPeer();
-                newPlayer.on('signal', function(data){
-                    host.sendConnectionString(roomId, JSON.stringify(data), function(err, res){
-                    });
-                });
-                newPlayer.on('connect', function(){
-                    var playernum = curr_i;
-                    console.log("Player Connected (%s)", playernum);
-
-                })
-
-                players.push({
-                    peer: newPlayer,
-                    id: null
-                });
-
-                // Receive Data
-                newPlayer.on('data', function (data) {
-                    alert(data);
-                });
-
-                document.getElementById('sendAlert').addEventListener('click', function(){
-                    newPlayer.send("Test");
-                });
-                console.log(curr_i);
-
-            }*/
 
             if (capacity > 0) {
                 var player1 = setupHostPeer();
@@ -2785,6 +2753,7 @@ process.umask = function() { return 0; };
                 players.push({
                     peer: player1,
                     id: null,
+                    username: null,
                     connected: false
                 });
 
@@ -2806,6 +2775,7 @@ process.umask = function() { return 0; };
                 players.push({
                     peer: player2,
                     id: null,
+                    username: null,
                     connected: false
                 });
 
@@ -2825,6 +2795,7 @@ process.umask = function() { return 0; };
                 players.push({
                     peer: player3,
                     id: null,
+                    username: null,
                     connected: false
                 });
 
@@ -2845,21 +2816,13 @@ process.umask = function() { return 0; };
                 players.push({
                     peer: player4,
                     id: null,
+                    username: null,
                     connected: false
                 });
 
 
             }
             // Caps at 4.
-
-
-            /*            document.getElementById('checkRoom').addEventListener('click', function () {
-                            gameRoomConnect(players, roomId);
-                        });*/
-
-
-            // TODO: Connections set up: Start game stuff below
-
             startGame(players, roomId);
         });
     }
@@ -2871,6 +2834,8 @@ process.umask = function() { return 0; };
                     if (res == "") {
                         return;
                     }
+                    console.log(res);
+                    setCookie("username" + res.playerNum, res.username);
                     setCookie("id_Player" + res.playerNum, res.playerId);
                     setCookie("connectStr_Player" + res.playerNum, res.connectionStr);
                 });
@@ -2882,6 +2847,7 @@ process.umask = function() { return 0; };
         for (var i = 0; i < players.length; i++) {
             if ((players[i].id == null) && readCookie("connectStr_Player" + i)) {
                 players[i].id = readCookie("id_Player" + i);
+                players[i].username = readCookie("username" + i);
                 players[i].peer.signal(readCookie("connectStr_Player" + i));
             }
         }
@@ -2999,7 +2965,6 @@ process.umask = function() { return 0; };
         var gameWidth = 800;
         var gameHeight = 600;
         var numPlayers = players.length;
-        var playerNames = [];
         var playerStatus = [];
 
         var playerScores = [];
@@ -3105,6 +3070,7 @@ process.umask = function() { return 0; };
                 for (var i = 0; i < players.length; i++) {
 
                     var playerState = {
+                        username: players[i].username,
                         stageComplete: false, // True when stage complete
                         stageStep: 0, // Keep track of which step player is on
                         stageScore: 0, // Score multiplier based on timing
@@ -3146,7 +3112,9 @@ process.umask = function() { return 0; };
                         gameState.updateScores();
                     } else {
                         console.log("GameOver");
-                        // TODO: End game state to show scores/winner
+                        for (var i = 0; i < playerStatus.length; i++) {
+                            playerStatus[i].totalScore += playerStatus[i].stageScore;
+                        }
                         gameState.endGame();
                     }
 
@@ -3186,19 +3154,20 @@ process.umask = function() { return 0; };
                         stepsDisplayed[playerNum].marker.anchor.setTo(0.5);
                     }
 
+
                     yPos += 60;
                 }
             },
 
             updateScores: function(){
                 //TODO: Font
-                var yPos = gameHeight / 3 - 50;
+                var yPos = gameHeight / 3 - 80;
                 for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
                     var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
                     if(playerScores[playerNum] != null){
                         playerScores[playerNum].setText("Pts: " + playerStatus[playerNum].totalScore);
                     } else {
-                        playerScores[playerNum] = game.add.text(xPos, yPos, "Pts: 0");
+                        playerScores[playerNum] = game.add.text(xPos, yPos, playerStatus[playerNum].username + "\nPts: 0");
                         playerScores[playerNum].anchor.setTo(0.5,0.5);
                     }
 

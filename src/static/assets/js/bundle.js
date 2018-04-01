@@ -3124,12 +3124,8 @@ process.umask = function() { return 0; };
 
             createListener: function (playerNum) {
                 players[playerNum].peer.on('data', function (data) {
-                    if (data.charAt(0) === '~'){
-                        playerNames[playerNum] = data.substr(1);
-                        console.log(data.substr[1]);
-                    } else {
-                        gameState.buttonPressed(playerNum, data);
-                    }
+
+                    gameState.buttonPressed(playerNum, data);
                 });
             },
 
@@ -3379,8 +3375,6 @@ process.umask = function() { return 0; };
 
                     gameRoom.on('connect', function () {
                         console.log("Player Connected");
-                        //Send username
-                        gameRoom.send("~" + api.getCurrentUser());
                     })
 
                     gameRoom.on('data', function (data) {

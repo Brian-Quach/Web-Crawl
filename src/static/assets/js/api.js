@@ -22,10 +22,22 @@ var api = (function(){
     }
 
     module.getCurrentUser = function(){
-        var l = document.cookie.split("username=");
-        if (l.length > 1) return l[1];
+        var nameEQ =  "username=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
         return null;
-    } // TODO: Do this w/ connection string cookies
+    }
+
+    //
+    // module.getCurrentUser = function(){
+    //     var l = document.cookie.split("username=");
+    //     if (l.length > 1) return l[1];
+    //     return null;
+    // } // TODO: Do this w/ connection string cookies
 
     module.signIn = function (username, password, callback){
         send("POST", "/api/signIn/", {username: username, password: password}, callback);

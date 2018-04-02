@@ -5,6 +5,8 @@ const app = express();
 const fs = require('fs');
 var device = require('express-device');
 
+const crypto = require('crypto');
+var salt = crypto.randomBytes(16).toString('base64');
 
 const session = require('express-session');
 app.use(session({
@@ -82,10 +84,13 @@ app.post('/api/signUp/', function (req, res) {
     client.exists(req.body.username, function (err, reply) {
         var username = req.body.username;
         var password = req.body.password;
+        var hash = crypto.createHmac('sha512', salt);
+        hash.update(password);
+        var saltedHash = hash.digest('base64');
         if (reply === 1) {
             return res.status(500).end("User already exists");
         } else {
-            var newUser = new User(username, password);
+            var newUser = new User(username, saltedHash);
             console.log(newUser);
             client.hmset(username, newUser);
             // initialize cookie
@@ -102,12 +107,15 @@ app.post('/api/signUp/', function (req, res) {
 app.post('/api/signIn/', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
+    var hash = crypto.createHmac('sha512', salt);
+    hash.update(password);
+    var saltedHash = hash.digest('base64');
     client.hgetall(username, function (err, account) {
         if (err) return console.log(err);
         if (account === null) {
             return res.status(500).end("User doesn't exists");
         } else {
-            if (account.password != password) return res.status(500).end("Incorrect Password");
+            if (account.password != saltedHash) return res.status(500).end("Incorrect Password");
             // initialize cookie
             res.setHeader('Set-Cookie', cookie.serialize('username', username, {
                 path: '/',

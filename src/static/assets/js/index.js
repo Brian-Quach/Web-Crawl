@@ -340,8 +340,10 @@
 
         var preGameState = {
             preload: function () {
-                this.countDownTimer = 5.00;
+                this.countDownTimer = 3.00;
                 this.countDown = game.add.text(game.world.centerX, game.world.centerY, '');
+                this.countDown.font = "Comic Sans MS";
+                this.coundDown.fontSize = 70;
                 this.countDown.anchor.setTo(0.5);
             },
 
@@ -483,7 +485,7 @@
                     }
 
 
-                    yPos += 60;
+                    yPos += 65;
                 }
             },
 
@@ -497,6 +499,8 @@
                     } else {
                         console.log(playerStatus[playerNum]);
                         playerScores[playerNum] = game.add.text(xPos, yPos, playerStatus[playerNum].username + "\nPts: 0");
+                        playerScores[playerNum].font = "Comic Sans MS";
+                        playerScores[playerNum].align = "center";
                         playerScores[playerNum].anchor.setTo(0.5,0.5);
                     }
 
@@ -545,8 +549,8 @@
         var winnerState = {
             preload: function () {
                 // This function will be executed at the beginning
-                game.load.image('restartButton', 'assets/img/exit.png');
-                game.load.image('quitButton', 'assets/img/restart.png');
+                game.load.image('restartButton', 'assets/img/restart.png');
+                game.load.image('quitButton', 'assets/img/exit.png');
             },
 
             create: function () {
@@ -575,6 +579,7 @@
                 }
 
                 this.winnerText = game.add.text(game.world.centerX, game.world.centerY, "Winner: "+ winnerPlayer + "\nScore: " + winnerScore);
+                this.winnerText.font = "Comic Sans MS";
                 this.winnerText.anchor.setTo(0.5,0.5);
             },
 
@@ -776,7 +781,7 @@
                 this.game.kineticScrolling.start();
 
                 this.info = this.game.add.text(controller.world.width * 0.01, controller.world.height * 0.01, "Select Room To Join", {
-                    font: "22px Arial",
+                    font: "36px Comic Sans MS",
                     fill: "#ffffff"
                 });
                 this.info.fixedToCamera = true;
@@ -791,7 +796,7 @@
                     newButton.events.onInputUp.add(selectState.selectRoom, {id: btnId});
                     this.rooms.push(newButton);
                     this.index = this.game.add.text(initX + 125, this.game.world.centerY, allRooms[i].roomName,
-                        {font: '50px Arial', align: "center"});
+                        {font: '50px Comic Sans MS', align: "center"});
                     this.index.anchor.set(0.5);
                     initX += 300;
                 }

@@ -2689,7 +2689,7 @@ process.umask = function() { return 0; };
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     }
@@ -2700,7 +2700,7 @@ process.umask = function() { return 0; };
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return true;
+            if (c.indexOf(nameEQ) === 0) return true;
         }
         return false;
     }
@@ -2749,7 +2749,7 @@ process.umask = function() { return 0; };
                     var playernum = 1;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player1,
@@ -2771,7 +2771,7 @@ process.umask = function() { return 0; };
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player2,
@@ -2791,7 +2791,7 @@ process.umask = function() { return 0; };
                     var playernum = 3;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player3,
@@ -2812,7 +2812,7 @@ process.umask = function() { return 0; };
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player4,
@@ -2830,9 +2830,9 @@ process.umask = function() { return 0; };
 
     function gameRoomConnect(players, roomId) {
         for (var i = 0; i < players.length; i++) {
-            if (players[i].id == null) {
+            if (players[i].id === null) {
                 host.getPlayerConnection(roomId, i, function (err, res) {
-                    if (res == "") {
+                    if (res === "") {
                         return;
                     }
                     console.log(res);
@@ -2846,7 +2846,7 @@ process.umask = function() { return 0; };
 
     function connectAll(players) {
         for (var i = 0; i < players.length; i++) {
-            if ((players[i].id == null) && readCookie("connectStr_Player" + i)) {
+            if ((players[i].id === null) && readCookie("connectStr_Player" + i)) {
                 players[i].id = readCookie("id_Player" + i);
                 players[i].username = readCookie("username" + i);
                 players[i].peer.signal(readCookie("connectStr_Player" + i));
@@ -2896,6 +2896,7 @@ process.umask = function() { return 0; };
         createRoomName.required = true;
 
         var createRoomCapacity = document.createElement('select');
+        createRoomCapacity.class = "form_element";
         createRoomCapacity.innerHTML =
             "<option value=1 disabled selected hidden>Room Capacity</option>" +
             "<option value=1>1</option>" +
@@ -2917,7 +2918,7 @@ process.umask = function() { return 0; };
             pageBody.style.display = "none";
             gameRoomSetup(roomName, roomCapacity);
         });
-    };
+    }
 
     function controllerSetUp(pageBody){
         if ((api.getCurrentUser() !== null) && (api.getCurrentUser() !== '')){
@@ -2926,7 +2927,7 @@ process.umask = function() { return 0; };
             loginSetUp(pageBody);
         }
 
-    };
+    }
 
     function loginSetUp(pageBody){
         var loginButton = document.createElement('a');
@@ -3017,8 +3018,7 @@ process.umask = function() { return 0; };
             preload: function () {
                 this.countDownTimer = 3.00;
                 this.countDown = game.add.text(game.world.centerX, game.world.centerY, '');
-                this.countDown.font = "Comic Sans MS";
-                this.coundDown.fontSize = 70;
+                this.countDown.font = "70 Comic Sans MS";
                 this.countDown.anchor.setTo(0.5);
             },
 
@@ -3169,7 +3169,7 @@ process.umask = function() { return 0; };
                 var yPos = gameHeight / 3 - 80;
                 for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
                     var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
-                    if(playerScores[playerNum] != null){
+                    if(playerScores[playerNum] !== null){
                         playerScores[playerNum].setText(playerStatus[playerNum].username + "\nPts: " + playerStatus[playerNum].totalScore);
                     } else {
                         console.log(playerStatus[playerNum]);
@@ -3346,7 +3346,7 @@ process.umask = function() { return 0; };
             },
 
             create: function () {
-                controller.stage.backgroundColor = '#33194e';
+                controller.stage.backgroundColor = '#16114e';
 
                 //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -3393,7 +3393,7 @@ process.umask = function() { return 0; };
 
                     gameRoom.on('connect', function () {
                         console.log("Player Connected");
-                    })
+                    });
 
                     gameRoom.on('data', function (data) {
                         console.log(data);
@@ -3453,7 +3453,7 @@ process.umask = function() { return 0; };
                 controller.add.button(0, 60, 'accountinfoButton', this.accountStats);
                 controller.add.button(0, 120, 'logoutbutton', this.controllerLogout);
 
-                controller.stage.backgroundColor = '#33194e';
+                controller.stage.backgroundColor = '#16114e';
 
                 //Starts the plugin
                 this.game.kineticScrolling.start();
@@ -3532,7 +3532,7 @@ process.umask = function() { return 0; };
                     controller.state.start('selectRoom', true, true);
                 }, function (err) {
                     console.log(err);
-                })
+                });
             },
 
             update: function () {

@@ -343,8 +343,7 @@
             preload: function () {
                 this.countDownTimer = 3.00;
                 this.countDown = game.add.text(game.world.centerX, game.world.centerY, '');
-                this.countDown.font = "Comic Sans MS";
-                this.coundDown.fontSize = 70;
+                this.countDown.font = "70 Comic Sans MS";
                 this.countDown.anchor.setTo(0.5);
             },
 

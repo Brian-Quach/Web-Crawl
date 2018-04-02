@@ -259,7 +259,6 @@
         loginButton.text = "Log In or Create Account";
 
         pageBody.appendChild(loginButton);
-
     }
 
     function displayMessage(msg) {
@@ -756,7 +755,7 @@
         var selectState = {
 
             preload: function () {
-                controller.load.image('exitbutton', 'assets/img/button4.png');
+                controller.load.image('accountinfoButton', 'assets/img/button4.png');
 
                 controller.load.image('logoutbutton', 'assets/img/button4.png');
             },
@@ -769,9 +768,8 @@
 
             },
             create: function () {
-                var exitButton = controller.add.button(0, 0, 'exitbutton', this.closeController);
-                var logoutbutton = controller.add.button(0, 50, 'logoutbutton', this.controllerLogout);
-
+                var logoutbutton = controller.add.button(0, 50, 'accountinfoButton', this.accountStats);
+                var logoutbutton = controller.add.button(0, 100, 'logoutbutton', this.controllerLogout);
 
                 //Starts the plugin
                 this.game.kineticScrolling.start();
@@ -822,6 +820,11 @@
 
             closeController: function () {
                 exitController(roomId);
+            },
+
+
+            accountStats: function () {
+                window.location.href = "/account.html";
             },
 
             controllerLogout: function () {

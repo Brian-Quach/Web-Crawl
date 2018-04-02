@@ -311,7 +311,7 @@
             preload: function () {
                 // This function will be executed at the beginning
                 //TODO: Change this to "START GAME" button or something
-                game.load.image('connectButton', 'assets/img/connect.png');
+                game.load.image('connectButton', 'assets/img/start.png');
             },
 
             create: function () {
@@ -545,7 +545,8 @@
         var winnerState = {
             preload: function () {
                 // This function will be executed at the beginning
-                game.load.image('nextButton', 'assets/img/connect.png');
+                game.load.image('restartButton', 'assets/img/exit.png');
+                game.load.image('quitButton', 'assets/img/restart.png');
             },
 
             create: function () {
@@ -554,8 +555,8 @@
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
                 //TODO: Exit button
-                this.restartButton = game.add.button(game.world.centerX*(2/3), game.world.centerY*(3/2), 'nextButton', this.restartGame);
-                this.exitButton = game.add.button(game.world.centerX*(4/3), game.world.centerY*(3/2), 'nextButton', this.quitGame);
+                this.restartButton = game.add.button(game.world.centerX*(2/3), game.world.centerY*(3/2), 'restartButton', this.restartGame);
+                this.exitButton = game.add.button(game.world.centerX*(4/3), game.world.centerY*(3/2), 'quitButton', this.quitGame);
                 this.restartButton.anchor.setTo(0.5, 0.5);
                 this.exitButton.anchor.setTo(0.5, 0.5);
 
@@ -661,7 +662,7 @@
                 controller.load.image('button3', 'assets/img/button3.png');
                 controller.load.image('button4', 'assets/img/button4.png');
 
-                controller.load.image('exitbutton', 'assets/img/button4.png');
+                controller.load.image('exitbutton', 'assets/img/exit.png');
             },
 
             create: function () {
@@ -755,9 +756,9 @@
         var selectState = {
 
             preload: function () {
-                controller.load.image('accountinfoButton', 'assets/img/button4.png');
+                controller.load.image('accountinfoButton', 'assets/img/accinfo.png');
 
-                controller.load.image('logoutbutton', 'assets/img/button4.png');
+                controller.load.image('logoutbutton', 'assets/img/signout.png');
             },
 
             init: function () {

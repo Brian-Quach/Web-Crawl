@@ -2,7 +2,7 @@
 
 
 ## Project Link
-> Rhythm Crawl is hosted [here](briiquach.com).
+> Rhythm Crawl is hosted [here](https://www.briiquach.com).
 
 ***
 

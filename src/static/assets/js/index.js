@@ -221,6 +221,7 @@
         createRoomName.required = true;
 
         var createRoomCapacity = document.createElement('select');
+        createRoomCapacity.class = "form_element";
         createRoomCapacity.innerHTML =
             "<option value=1 disabled selected hidden>Room Capacity</option>" +
             "<option value=1>1</option>" +

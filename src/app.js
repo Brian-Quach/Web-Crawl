@@ -51,6 +51,7 @@ var GameRoom = function (id, roomName, capacity) {
     this.capacity = capacity;
     this.roomName = roomName;
     this.players = [];
+    this.full = false;
 };
 
 var User = function (username, password) {
@@ -179,11 +180,14 @@ app.post('/api/createroom/', function (req, res) {
 app.get('/api/allrooms/', function (req, res) {
     var roomList = [];
     for (var i = 0; i < rooms.length; i++) {
-        var nextRoom = {
-            roomId: rooms[i].id,
-            roomName: rooms[i].roomName
-        };
-        roomList.push(nextRoom);
+        if (rooms[i].full === false){
+            var nextRoom = {
+                roomId: rooms[i].id,
+                roomName: rooms[i].roomName
+
+            };
+            roomList.push(nextRoom);
+        }
     }
     return res.json(roomList);
 });
@@ -225,6 +229,11 @@ app.get('/api/requestConnection/:roomId/:username/', function (req, res) {
                     };
                     room.players[j].peerString = "Waiting";
                     room.players[j].username = username;
+
+                    if(j+1 == room.players.length){
+                        rooms[i].full = true;
+                    }
+
                     return res.json(ret);
                 }
             }
@@ -233,6 +242,19 @@ app.get('/api/requestConnection/:roomId/:username/', function (req, res) {
     }
     console.log("couldn't find");
     return res.status(401).end("Could not find room");
+});
+
+app.post('/api/closeRoom/', function (req, res){
+    var roomId = req.body.roomId;
+    for (var i = 0; i < rooms.length; i++) {
+        if (rooms[i].id == roomId) {
+            rooms.splice(i, 1);
+            return res.json("Room removed");
+        }
+    }
+    console.log("couldn't find");
+    return res.status(401).end("Could not find room");
+
 });
 
 app.post('/api/connectToRoom/', function (req, res) {

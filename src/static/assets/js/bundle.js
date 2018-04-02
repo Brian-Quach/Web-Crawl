@@ -3239,6 +3239,10 @@ process.umask = function() { return 0; };
                 var winnerScore = -1;
 
                 for (var i=0; i<playerStatus.length; i++){
+                    // Give experience
+                    api.giveXp(playerStatus[i].username, playerStatus[i].totalScore, function(err, res){});
+
+                    // Check for highest score
                     if (playerStatus[i].totalScore > winnerScore){
                         winnerPlayer = playerStatus[i].username;
                         winnerScore = playerStatus[i].totalScore;
@@ -3271,7 +3275,7 @@ process.umask = function() { return 0; };
 
 
             quitGame: function () {
-                exitGame();
+                exitGame(roomId);
             }
         };
 
@@ -3291,8 +3295,10 @@ process.umask = function() { return 0; };
         return game;
     }
 
-    function exitGame(){
+    function exitGame(roomId){
         phaserObj.destroy();
+
+        host.closeRoom(roomId, function(res, err){});
 
         var pageBody = document.getElementById('pageContent');
         pageBody.style.display = "block";
@@ -3300,7 +3306,6 @@ process.umask = function() { return 0; };
         pageSetUp();
 
     }
-
 
     function startController() {
         var allRooms = [];

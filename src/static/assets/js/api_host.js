@@ -29,6 +29,9 @@ var host = (function(){
         send("GET", "/api/getConnection/"+roomId+"/"+playerNum+"/", null, callback);
     }
 
+    module.closeRoom = function(roomId, callback){
+        send("POST", "/api/closeRoom/", {roomId: roomId}, callback);
+    }
 
     return module;
 })();

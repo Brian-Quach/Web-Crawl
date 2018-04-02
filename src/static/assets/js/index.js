@@ -564,6 +564,10 @@
                 var winnerScore = -1;
 
                 for (var i=0; i<playerStatus.length; i++){
+                    // Give experience
+                    api.giveXp(playerStatus[i].username, playerStatus[i].totalScore, function(err, res){});
+
+                    // Check for highest score
                     if (playerStatus[i].totalScore > winnerScore){
                         winnerPlayer = playerStatus[i].username;
                         winnerScore = playerStatus[i].totalScore;
@@ -596,7 +600,7 @@
 
 
             quitGame: function () {
-                exitGame();
+                exitGame(roomId);
             }
         };
 
@@ -616,8 +620,10 @@
         return game;
     }
 
-    function exitGame(){
+    function exitGame(roomId){
         phaserObj.destroy();
+
+        host.closeRoom(roomId, function(res, err){});
 
         var pageBody = document.getElementById('pageContent');
         pageBody.style.display = "block";
@@ -625,7 +631,6 @@
         pageSetUp();
 
     }
-
 
     function startController() {
         var allRooms = [];

@@ -3069,7 +3069,7 @@ process.umask = function() { return 0; };
             create: function () {
                 // This function is called after the preload function
                 // Here we set up the game, display sprites, etc.
-                game.stage.backgroundColor = '#4bf442';
+                game.stage.backgroundColor = '#71c5cf';
                 this.stageMoves = gameState.nextMoveSet();
 
                 for (var i = 0; i < players.length; i++) {
@@ -3346,6 +3346,7 @@ process.umask = function() { return 0; };
             },
 
             create: function () {
+                controller.stage.backgroundColor = '#33194e';
 
                 //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -3449,8 +3450,10 @@ process.umask = function() { return 0; };
 
             },
             create: function () {
-                var logoutbutton = controller.add.button(0, 50, 'accountinfoButton', this.accountStats);
-                var logoutbutton = controller.add.button(0, 100, 'logoutbutton', this.controllerLogout);
+                controller.add.button(0, 60, 'accountinfoButton', this.accountStats);
+                controller.add.button(0, 120, 'logoutbutton', this.controllerLogout);
+
+                controller.stage.backgroundColor = '#33194e';
 
                 //Starts the plugin
                 this.game.kineticScrolling.start();

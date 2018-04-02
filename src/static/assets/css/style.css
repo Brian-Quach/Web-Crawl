@@ -1,24 +1,76 @@
+
 body {
-  font-family: "Lucida Grande", "Arial", sans-serif;
-  font-size: 16px;
+	background: #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #3C3D3F;
+    text-align: left;
+    margin: auto;
+	position: relative;
+	width: 100%;
+	display: block;
 }
 
-.messagebox {
-  border: 1px solid black;
-  padding: 5px;
-  width: 450px;
+#pageContent {
+	background: #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	color: #3C3D3F;
+    text-align: left;
+    margin: auto;
+	position: relative;
+	width: 100%;
+	display: block;
 }
 
-.buttonright {
-  float: right;
+#pageContent > * {
+	margin: auto;
+	display: block;
 }
 
-.buttonleft {
-  float: left;
+.complex_form{
+    margin-top:20px;
+    border-radius: 10px;
+    padding:20px 10px 10px 10px;
+    display:flex;
+    flex-direction: column;
 }
 
-.controlbox {
-  padding: 5px;
-  width: 450px;
-  height: 28px;
+.complex_form .form_title{
+    font-size:20px;
+    font-weight:bold;
+    margin:-20px -10px 20px -10px;
+    padding:10px 0px 10px 25px;
+    color:white;
+    background-color: #3C3D3F;
+    border-radius: 7px 7px 0px 0px;
+}
+
+.complex_form .form_radio{
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.complex_form .form_element{
+     margin-bottom:10px;
+     font-size: 20px;
+     border-radius:10px;
+     padding:5px 10px 5px 10px;
+}
+/* This snippet of code was generated using: http://css3buttongenerator.com/ */
+
+.btn {
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  background: #3498db;
+  padding: 10px 20px 10px 20px;
+  border: 0px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #5e646d;
+  text-decoration: none;
 }

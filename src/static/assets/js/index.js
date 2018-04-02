@@ -378,7 +378,7 @@
                 // Temp "Level"
                 var levelLength = 60;
                 //TODO: Change back
-                levelLength = 15
+                levelLength = 15;
 
                 levelStr = generateLevelString(levelLength);
                 level = parseLevel(levelStr);

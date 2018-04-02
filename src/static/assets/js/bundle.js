@@ -2677,6 +2677,7 @@ process.umask = function() { return 0; };
     "use strict";
 
     var Peer = require('simple-peer');
+    var phaserObj;
 
     function setCookie(cname, cvalue) {
         document.cookie = cname + "=" + cvalue + ";path=/";
@@ -2823,7 +2824,7 @@ process.umask = function() { return 0; };
 
             }
             // Caps at 4.
-            startGame(players, roomId);
+            phaserObj = startGame(players, roomId);
         });
     }
 
@@ -2920,7 +2921,7 @@ process.umask = function() { return 0; };
 
     function controllerSetUp(pageBody){
         if (api.getCurrentUser() !== null){
-            startController();
+            phaserObj = startController();
         } else {
             loginSetUp(pageBody);
         }
@@ -3050,8 +3051,11 @@ process.umask = function() { return 0; };
 
                 // TODO: Get from server
                 // Temp "Level"
+                var levelLength = 60;
+                //TODO: Change back
+                levelLength = 15
 
-                levelStr = generateLevelString(60);
+                levelStr = generateLevelString(levelLength);
                 level = parseLevel(levelStr);
                 // This function will be executed at the beginning
                 game.load.image('box1', 'assets/img/button1.png');
@@ -3165,7 +3169,7 @@ process.umask = function() { return 0; };
                 for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
                     var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
                     if(playerScores[playerNum] != null){
-                        playerScores[playerNum].setText("Pts: " + playerStatus[playerNum].totalScore);
+                        playerScores[playerNum].setText(playerStatus[playerNum].username + "\nPts: " + playerStatus[playerNum].totalScore);
                     } else {
                         console.log(playerStatus[playerNum]);
                         playerScores[playerNum] = game.add.text(xPos, yPos, playerStatus[playerNum].username + "\nPts: 0");
@@ -3226,20 +3230,22 @@ process.umask = function() { return 0; };
                 // Here we set up the game, display sprites, etc.
                 game.stage.backgroundColor = '#71c5cf';
                 //TODO: Exit button
-                this.connectButton = game.add.button(game.world.centerX, game.world.centerY*(3/4), 'nextButton', this.restartGame);
-                this.connectButton.anchor.setTo(0.5);
+                this.restartButton = game.add.button(game.world.centerX*(2/3), game.world.centerY*(3/2), 'nextButton', this.restartGame);
+                this.exitButton = game.add.button(game.world.centerX*(4/3), game.world.centerY*(3/2), 'nextButton', this.quitGame);
+                this.restartButton.anchor.setTo(0.5, 0.5);
+                this.exitButton.anchor.setTo(0.5, 0.5);
 
                 var winnerPlayer = null;
                 var winnerScore = -1;
 
                 for (var i=0; i<playerStatus.length; i++){
                     if (playerStatus[i].totalScore > winnerScore){
-                        winnerPlayer = i+1;
+                        winnerPlayer = playerStatus[i].username;
                         winnerScore = playerStatus[i].totalScore;
                     }
                 }
 
-                this.winnerText = game.add.text(game.world.centerX, game.world.centerY, "Winner: Player "+ winnerPlayer + "\nScore: " + winnerScore);
+                this.winnerText = game.add.text(game.world.centerX, game.world.centerY, "Winner: "+ winnerPlayer + "\nScore: " + winnerScore);
                 this.winnerText.anchor.setTo(0.5,0.5);
             },
 
@@ -3262,6 +3268,11 @@ process.umask = function() { return 0; };
                 }
                 game.state.start('preGame', true, true);
             },
+
+
+            quitGame: function () {
+                exitGame();
+            }
         };
 
 
@@ -3278,6 +3289,16 @@ process.umask = function() { return 0; };
         game.state.start('main');
 
         return game;
+    }
+
+    function exitGame(){
+        phaserObj.destroy();
+
+        var pageBody = document.getElementById('pageContent');
+        pageBody.style.display = "block";
+        pageBody.innerHTML = "";
+        pageSetUp();
+
     }
 
 

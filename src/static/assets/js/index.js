@@ -245,7 +245,7 @@
     };
 
     function controllerSetUp(pageBody){
-        if (api.getCurrentUser() !== null){
+        if ((api.getCurrentUser() !== null) && (api.getCurrentUser() !== '')){
             phaserObj = startController();
         } else {
             loginSetUp(pageBody);
@@ -632,6 +632,17 @@
 
     }
 
+
+    function exitController(){
+        phaserObj.destroy();
+
+        var pageBody = document.getElementById('pageContent');
+        pageBody.style.display = "block";
+        pageBody.innerHTML = "";
+        pageSetUp();
+    }
+
+
     function startController() {
         var allRooms = [];
 
@@ -650,6 +661,8 @@
                 controller.load.image('button2', 'assets/img/button2.png');
                 controller.load.image('button3', 'assets/img/button3.png');
                 controller.load.image('button4', 'assets/img/button4.png');
+
+                controller.load.image('exitbutton', 'assets/img/button4.png');
             },
 
             create: function () {
@@ -663,6 +676,8 @@
                 var button2 = controller.add.button(gameWidth * (3 / 8), buttonY, 'button2', this.button2);
                 var button3 = controller.add.button(gameWidth * (5 / 8), buttonY, 'button3', this.button3);
                 var button4 = controller.add.button(gameWidth * (7 / 8), buttonY, 'button4', this.button4);
+
+                var exitButton = controller.add.button(0, 0, 'exitbutton', this.closeController);
 
                 button1.anchor.setTo(0.5, 0.5);
                 button1.scale.setTo(3, 3);
@@ -730,11 +745,21 @@
             button4: function () {
                 connection.send("D");
                 console.log("Button4 Pressed");
+            },
+
+            closeController: function () {
+                exitController();
             }
 
         };
 
         var selectState = {
+
+            preload: function () {
+                controller.load.image('exitbutton', 'assets/img/button4.png');
+
+                controller.load.image('logoutbutton', 'assets/img/button4.png');
+            },
 
             init: function () {
 
@@ -744,6 +769,10 @@
 
             },
             create: function () {
+                var exitButton = controller.add.button(0, 0, 'exitbutton', this.closeController);
+                var logoutbutton = controller.add.button(0, 50, 'logoutbutton', this.controllerLogout);
+
+
                 //Starts the plugin
                 this.game.kineticScrolling.start();
 
@@ -789,6 +818,14 @@
             selectRoom: function () {
                 roomId = this.id;
                 controller.state.start('main', true, true);
+            },
+
+            closeController: function () {
+                exitController(roomId);
+            },
+
+            controllerLogout: function () {
+                window.location.href = "/api/signout";
             }
         };
 

@@ -43,6 +43,10 @@ var api = (function(){
         send("POST", "/api/signIn/", {username: username, password: password}, callback);
     }
 
+    module.signOut = function (callback){
+        send("GET", "/api/signout/", null, callback);
+    }
+
     module.signUp = function (username, password, callback){
         send("POST", "/api/signUp/", {username: username, password: password}, callback);
     }

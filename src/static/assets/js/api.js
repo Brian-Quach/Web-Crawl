@@ -19,7 +19,7 @@ var api = (function(){
 
     module.getDeviceType = function(callback){
         send("GET", "/api/device/", null, callback);
-    }
+    };
 
     module.getCurrentUser = function(){
         var nameEQ =  "username=";
@@ -27,10 +27,10 @@ var api = (function(){
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
-    }
+    };
 
     //
     // module.getCurrentUser = function(){
@@ -41,23 +41,23 @@ var api = (function(){
 
     module.signIn = function (username, password, callback){
         send("POST", "/api/signIn/", {username: username, password: password}, callback);
-    }
+    };
 
     module.signOut = function (callback){
         send("GET", "/api/signout/", null, callback);
-    }
+    };
 
     module.signUp = function (username, password, callback){
         send("POST", "/api/signUp/", {username: username, password: password}, callback);
-    }
+    };
 
     module.getLevel = function (username, callback){
         send("GET", "/api/getlevel/" + username + "/", null, callback);
-    }
+    };
 
     module.giveXp = function (username, experience, callback){
         send("POST", "/api/givexp/", {username: username, experience: experience}, callback);
-    }
+    };
 
     return module;
 })();

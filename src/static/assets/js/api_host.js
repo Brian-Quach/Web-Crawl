@@ -19,19 +19,19 @@ var host = (function(){
 
     module.createGameRoom = function(roomName, capacity, callback){
         send("POST", "/api/createroom/", {roomName: roomName, capacity: capacity}, callback);
-    }
+    };
 
     module.sendConnectionString = function(roomId, connectionStr, callback){
         send("POST", "/api/newpeer/", {roomId: roomId, connectionStr: connectionStr}, callback);
-    }
+    };
 
     module.getPlayerConnection = function(roomId, playerNum, callback){
         send("GET", "/api/getConnection/"+roomId+"/"+playerNum+"/", null, callback);
-    }
+    };
 
     module.closeRoom = function(roomId, callback){
         send("POST", "/api/closeRoom/", {roomId: roomId}, callback);
-    }
+    };
 
     return module;
 })();

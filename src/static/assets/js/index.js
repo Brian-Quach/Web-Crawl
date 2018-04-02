@@ -14,7 +14,7 @@
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     }
@@ -25,7 +25,7 @@
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) == 0) return true;
+            if (c.indexOf(nameEQ) === 0) return true;
         }
         return false;
     }
@@ -74,7 +74,7 @@
                     var playernum = 1;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player1,
@@ -96,7 +96,7 @@
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player2,
@@ -116,7 +116,7 @@
                     var playernum = 3;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player3,
@@ -137,7 +137,7 @@
                     var playernum = 2;
                     console.log("Player Connected (%s)", playernum);
 
-                })
+                });
 
                 players.push({
                     peer: player4,
@@ -155,9 +155,9 @@
 
     function gameRoomConnect(players, roomId) {
         for (var i = 0; i < players.length; i++) {
-            if (players[i].id == null) {
+            if (players[i].id === null) {
                 host.getPlayerConnection(roomId, i, function (err, res) {
-                    if (res == "") {
+                    if (res === "") {
                         return;
                     }
                     console.log(res);
@@ -171,7 +171,7 @@
 
     function connectAll(players) {
         for (var i = 0; i < players.length; i++) {
-            if ((players[i].id == null) && readCookie("connectStr_Player" + i)) {
+            if ((players[i].id === null) && readCookie("connectStr_Player" + i)) {
                 players[i].id = readCookie("id_Player" + i);
                 players[i].username = readCookie("username" + i);
                 players[i].peer.signal(readCookie("connectStr_Player" + i));
@@ -243,7 +243,7 @@
             pageBody.style.display = "none";
             gameRoomSetup(roomName, roomCapacity);
         });
-    };
+    }
 
     function controllerSetUp(pageBody){
         if ((api.getCurrentUser() !== null) && (api.getCurrentUser() !== '')){
@@ -252,7 +252,7 @@
             loginSetUp(pageBody);
         }
 
-    };
+    }
 
     function loginSetUp(pageBody){
         var loginButton = document.createElement('a');
@@ -495,7 +495,7 @@
                 var yPos = gameHeight / 3 - 80;
                 for (var playerNum = 0; playerNum < playerStatus.length; playerNum++){
                     var xPos = gameWidth / (2 * numPlayers) + (gameWidth * (playerNum)) / numPlayers;
-                    if(playerScores[playerNum] != null){
+                    if(playerScores[playerNum] !== null){
                         playerScores[playerNum].setText(playerStatus[playerNum].username + "\nPts: " + playerStatus[playerNum].totalScore);
                     } else {
                         console.log(playerStatus[playerNum]);
@@ -719,7 +719,7 @@
 
                     gameRoom.on('connect', function () {
                         console.log("Player Connected");
-                    })
+                    });
 
                     gameRoom.on('data', function (data) {
                         console.log(data);
@@ -858,7 +858,7 @@
                     controller.state.start('selectRoom', true, true);
                 }, function (err) {
                     console.log(err);
-                })
+                });
             },
 
             update: function () {

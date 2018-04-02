@@ -19,16 +19,16 @@ var mobile = (function(){
 
     module.listAllRooms = function(callback){
         send("GET", "/api/allrooms/" , null, callback);
-    }
+    };
 
     module.requestRoomConnection = function(roomId, username, callback){
         send("GET", "/api/requestConnection/" + roomId + "/" + username + "/", null, callback);
-    }
+    };
 
     module.connectToRoom = function(roomId, playerNum, connectionStr, callback){
         var body = {roomId: roomId, playerNum: playerNum, connectionStr: connectionStr};
         send("POST", "/api/connectToRoom/", body, callback);
-    }
+    };
 
 
     return module;

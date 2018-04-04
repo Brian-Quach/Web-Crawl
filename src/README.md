@@ -128,8 +128,35 @@ curl --request POST
 ```
 
 ## allrooms
+Request
+* HTTP method - GET
+* URL - https://briiquach.com/api/allrooms/
+
+Response - HTTP Status Code: 200 with a list of all room ids and names available for play
+
+Example
+```
+curl --request GET 
+	https://briiquach.com/api/allrooms/
+```
 
 ## newpeer
+Request 
+* HTTP method - POST
+* URL - https://briiquach.com/api/newpeer/
+* content-type - application/json
+* body - roomid and connection string
+
+Response - HTTP Status Code: 200 for success with string "Connection Added", 401 if the room is full or not found
+
+Example
+```
+curl --request POST 
+	-H "Content-Type: application/json" 
+	-d '{"roomId":0,"connectionStr":"qxvkl"}' 
+	-c cookie.txt 
+	https://briiquach.com/api/newpeer/
+```
 
 ## requestConnection
 

@@ -22,7 +22,7 @@ Request
 * content-type - application/json
 * body - username and password for signup
 
-Response - HTTP Status Code: 200 for success, 500 if the username exists
+Response - HTTP Status Code: 200 for success with string "Account Created", 500 if the username already exists
 
 Example
 ```
@@ -40,7 +40,7 @@ Request
 * content-type - application/json
 * body - username and password for signin
 
-Response - HTTP Status Code: 200 for success, 500 if the username does not exist or if the password is incorrect
+Response - HTTP Status Code: 200 for success with the username, 500 if the username does not exist or if the password is incorrect
 
 Example
 ```
@@ -75,7 +75,7 @@ Response - HTTP Status Code: 200 for success with level information, 500 if the 
 Example
 ```
 curl --request GET 
-	https://briiquach.com/api/getlevel/alice
+	https://briiquach.com/api/getlevel/alice/
 ```
 
 ## givexp
@@ -85,7 +85,7 @@ Request
 * content-type - application/json
 * body - username and exp to assign
 
-Response - HTTP Status Code: 200 for success, 500 if the user does not exist
+Response - HTTP Status Code: 200 for success with exp number awarded, 500 if the user does not exist
 
 Example
 ```
@@ -97,8 +97,35 @@ curl --request POST
 ```
 
 ## device
+Request
+* HTTP method - GET
+* URL - https://briiquach.com/api/device/
+
+Response - HTTP Status Code: 200 with string "host"/"controller"/"unknown" based on device type
+
+Example
+```
+curl --request GET 
+	https://briiquach.com/api/device/
+```
 
 ## createroom
+Request 
+* HTTP method - POST
+* URL - https://briiquach.com/api/createroom/
+* content-type - application/json
+* body - room name and capacity
+
+Response - HTTP Status Code: 200 with roomid for the new room
+
+Example
+```
+curl --request POST 
+	-H "Content-Type: application/json" 
+	-d '{"roomName":"yay1","capacity":2}' 
+	-c cookie.txt 
+	https://briiquach.com/api/createroom/
+```
 
 ## allrooms
 

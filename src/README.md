@@ -1,4 +1,4 @@
-Welcome to the webcrawlers API ♫꒰･‿･๑꒱
+#Welcome to the webcrawlers API ♫꒰･‿･๑꒱
 
 ## The methods available for use:
 * signup - sign up a new user given the username and password
@@ -14,3 +14,49 @@ Welcome to the webcrawlers API ♫꒰･‿･๑꒱
 * closeRoom - given the roomid, remove room roomid from available rooms
 * connectToRoom - given the roomid, playerNum, and connectionStr, connect the player to the room
 * getConnection - given the roomid and playerNum, get the username, playerNum, playerId, and connection string
+
+## signup
+Request 
+* HTTP method - POST
+* URL - https://briiquach.com/api/signUp/
+* content-type - application/json
+* body - username and password for signup
+
+Response - HTTP Status Code: 200 for success, 500 if the username exists
+
+Example
+```
+curl --request POST 
+	-H "Content-Type: application/json" 
+	-d '{"username":"wwww","password":"wwww"}' 
+	-c cookie.txt 
+	https://briiquach.com/api/signUp/
+```
+
+## signin
+
+## signout
+
+## getlevel
+
+## givexp
+
+## device
+
+## createroom
+
+## allrooms
+
+## newpeer
+
+## requestConnection
+
+## closeRoom
+
+## connectToRoom
+
+## getConnection
+
+
+
+

@@ -1,8 +1,12 @@
 # Web Crawlers - Project Proposal
 
-
 ## Project Link
 > Rhythm Crawl is hosted [here](https://www.briiquach.com).
+
+***
+
+## Project Demo
+> Check out the video [demo](https://youtu.be/n9TnLVjRkDU)!
 
 ***
 

@@ -1,8 +1,8 @@
-#Welcome to the webcrawlers API ♫꒰･‿･๑꒱
+# The Webcrawlers API ♫꒰･‿･๑꒱
 
 ## The methods available for use:
-* signup - sign up a new user given the username and password
-* signin - sign in an existing user given the username and password
+* signUp - sign up a new user given the username and password
+* signIn - sign in an existing user given the username and password
 * signout - signout the current user that is signed in
 * getlevel - given the username, get the level
 * givexp - given the username, give xp to the user
@@ -15,7 +15,7 @@
 * connectToRoom - given the roomid, playerNum, and connectionStr, connect the player to the room
 * getConnection - given the roomid and playerNum, get the username, playerNum, playerId, and connection string
 
-## signup
+## signUp
 Request 
 * HTTP method - POST
 * URL - https://briiquach.com/api/signUp/
@@ -28,12 +28,28 @@ Example
 ```
 curl --request POST 
 	-H "Content-Type: application/json" 
-	-d '{"username":"wwww","password":"wwww"}' 
+	-d '{"username":"alice","password":"alice"}' 
 	-c cookie.txt 
 	https://briiquach.com/api/signUp/
 ```
 
-## signin
+## signIn
+Request 
+* HTTP method - POST
+* URL - https://briiquach.com/api/signIn/
+* content-type - application/json
+* body - username and password for signin
+
+Response - HTTP Status Code: 200 for success, 500 if the username does not exist or if the password is incorrect
+
+Example
+```
+curl --request POST 
+	-H "Content-Type: application/json" 
+	-d '{"username":"alice","password":"alice"}' 
+	-c cookie.txt 
+	https://briiquach.com/api/signIn/
+```
 
 ## signout
 
